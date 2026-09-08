@@ -13,12 +13,12 @@
 </head>
 <body>
 
-  <!-- Topo da Aplicacao -->
+  <!-- Topo da Aplicação -->
   <header class="cq-header">
     <div class="logo-container">
       <img src="static/logo2.png" alt="Logo CodeQuest LAB" class="header-logo">
       <div class="logo">CodeQuest <span>LAB</span></div>
-      <span class="slogan-text">Aprenda programacao na pratica</span>
+      <span class="slogan-text">Aprenda programação na prática</span>
     </div>
     
     <nav class="nav-tabs">
@@ -33,26 +33,26 @@
     <div class="toolbar">
       <span class="tool-title">Ambiente Livre Python 3.11</span>
       <div class="actions">
-        <button class="btn btn-test" onclick="runFreePython()">Executar Codigo</button>
+        <button class="btn btn-test" onclick="runFreePython()">Executar Código</button>
         <button class="btn btn-secondary" onclick="clearFreeEditor()">Limpar</button>
       </div>
     </div>
     <div class="full-sandbox-container">
       <div class="code-section">
-        <div class="editor-header">Editor de Codigo</div>
-        <textarea id="free-python-code" class="code-editor" spellcheck="false"># Escreva qualquer codigo Python aqui e clique em Executar
+        <div class="editor-header">Editor de Código</div>
+        <textarea id="free-python-code" class="code-editor" spellcheck="false"># Escreva qualquer código Python aqui e clique em Executar
 nome = "CodeQuest"
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
       </div>
       <div class="console-section">
-        <div class="console-header">Terminal de Saida</div>
-        <pre id="free-python-output" class="console-output">Aguardando execucao...</pre>
+        <div class="console-header">Terminal de Saída</div>
+        <pre id="free-python-output" class="console-output">Aguardando execução...</pre>
       </div>
     </div>
   </main>
 
- <!-- ABA 2: DESAFIOS BUG HUNT -->
+  <!-- ABA 2: DESAFIOS BUG HUNT -->
   <main id="challenges-tab" class="tab-content">
     <div class="toolbar">
       <span class="badge" id="challenge-badge">Nível Básico</span>
@@ -91,52 +91,89 @@ for i in range(3):
     </div>
   </main>
 
-  <!-- ABA 3: STUDIO CSS MELHORADO -->
+  <!-- ABA 3: STUDIO CSS MULTI-COMPONENTE -->
   <main id="css-tab" class="tab-content">
-    <div class="css-studio-grid">
-      <!-- Painel de Ajustes -->
+    <div class="studio-grid">
+      
+      <!-- PAINEL DE CONTROLES -->
       <section class="controls-panel">
-        <h3>Ajustes do Componente</h3>
-        
-        <label>Texto do Botao:</label>
-        <input type="text" id="css-btn-text" value="Clique Aqui">
-
-        <label>Cor de Fundo:</label>
-        <input type="color" id="css-bg-color" value="#2563eb">
-
-        <label>Cor do Texto:</label>
-        <input type="color" id="css-text-color" value="#ffffff">
-
-        <label>Espacamento Interno (Padding): <span id="val-padding">12px 24px</span></label>
-        <input type="range" id="css-padding" min="6" max="30" value="12">
-
-        <label>Arredondamento (Border Radius): <span id="val-radius">8px</span></label>
-        <input type="range" id="css-radius" min="0" max="40" value="8">
-
-        <label>Sombra (Box Shadow): <span id="val-shadow">10px</span></label>
-        <input type="range" id="css-shadow" min="0" max="30" value="10">
-
-        <label>Borda (Border Width): <span id="val-border">2px</span></label>
-        <input type="range" id="css-border-width" min="0" max="10" value="2">
-
-        <label>Cor da Borda:</label>
-        <input type="color" id="css-border-color" value="#3b82f6">
-      </section>
-
-      <!-- Painel de Resultado -->
-      <section class="preview-panel">
-        <h3>Visualizacao da Interface</h3>
-        <div class="preview-box">
-          <button id="target-element" class="preview-btn">Clique Aqui</button>
+        <div class="panel-header" style="margin-bottom: 15px;">
+          <h3>Ajustes do Componente</h3>
+          <select id="css-component-select" class="challenge-dropdown" onchange="alterarComponenteCSS(this.value)">
+            <option value="botao">Componente: Botão</option>
+            <option value="card">Componente: Card / Container</option>
+            <option value="input">Componente: Campo de Texto</option>
+            <option value="badge">Componente: Badge / Tag</option>
+          </select>
         </div>
 
-        <h3>Codigo CSS Gerado</h3>
-        <textarea id="css-output" readonly class="css-code-area"></textarea>
-        <button class="btn btn-secondary" onclick="copyCSS()">Copiar Codigo CSS</button>
+        <div class="control-group">
+          <label>Texto do Componente:</label>
+          <input type="text" id="css-text-input" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+        </div>
+
+        <div class="control-row" style="display: flex; gap: 10px;">
+          <div class="control-group" style="flex: 1;">
+            <label>Cor de Fundo:</label>
+            <input type="color" id="css-bg-color" value="#2563eb" onchange="atualizarPreviewCSS()">
+          </div>
+          <div class="control-group" style="flex: 1;">
+            <label>Cor do Texto:</label>
+            <input type="color" id="css-text-color" value="#ffffff" onchange="atualizarPreviewCSS()">
+          </div>
+          <div class="control-group" style="flex: 1;">
+            <label>Cor da Borda:</label>
+            <input type="color" id="css-border-color" value="#3b82f6" onchange="atualizarPreviewCSS()">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Padding Vertical: <span id="lbl-padding-v">12px</span></label>
+          <input type="range" id="css-padding-v" min="0" max="50" value="12" oninput="atualizarPreviewCSS()">
+        </div>
+
+        <div class="control-group">
+          <label>Padding Horizontal: <span id="lbl-padding-h">24px</span></label>
+          <input type="range" id="css-padding-h" min="0" max="60" value="24" oninput="atualizarPreviewCSS()">
+        </div>
+
+        <div class="control-group">
+          <label>Arredondamento (Border Radius): <span id="lbl-radius">8px</span></label>
+          <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
+        </div>
+
+        <div class="control-group">
+          <label>Espessura da Borda: <span id="lbl-border-width">2px</span></label>
+          <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
+        </div>
+
+        <div class="control-group">
+          <label>Sombra (Box Shadow): <span id="lbl-shadow">10px</span></label>
+          <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
+        </div>
       </section>
+
+      <!-- PREVIEW E CÓDIGO -->
+      <section class="display-panel">
+        <div class="preview-box">
+          <h3>Visualização da Interface</h3>
+          <div id="css-preview-container" class="preview-canvas">
+            <!-- Elemento renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+        <div class="code-box">
+          <h3>Código CSS Gerado</h3>
+          <textarea id="generated-css-code" readonly class="css-code-area"></textarea>
+          <button class="btn btn-submit" onclick="copiarCSS()">Copiar Código CSS</button>
+        </div>
+      </section>
+
     </div>
   </main>
 
+  <!-- SCRIPTS DA APLICAÇÃO -->
+  <script src="js/ui-utils.js"></script>
   <script src="js/pyodide-engine.js"></script>
   <script src="js/css-studio.js"></script>
   <script src="js/app.js"></script>

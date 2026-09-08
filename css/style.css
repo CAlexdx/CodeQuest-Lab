@@ -94,3 +94,28 @@ body { background-color: var(--bg-dark); color: var(--text-main); }
   width: auto;         /* Mantém a proporção sem distorcer */
   object-fit: contain;
 }
+
+/* Notificação Toast Flutuante */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.toast-container.toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-body {
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
