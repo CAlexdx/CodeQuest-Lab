@@ -1,4 +1,7 @@
-// BANCO DE DESAFIOS LOCAIS (Client-Side)
+// =========================================================
+// APP.JS - Lógica dos Desafios e Sandbox Python
+// =========================================================
+
 const DESAFIOS = [
     {
         id: "par_impar",
@@ -31,21 +34,6 @@ const DESAFIOS = [
 
 let desafioAtual = DESAFIOS[0];
 
-// Troca de Abas
-function switchTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    
-    document.getElementById(tabId).classList.add('active');
-    
-    // Ativa o botão da aba correspondente
-    const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(
-        btn => btn.getAttribute('onclick').includes(tabId)
-    );
-    if (activeBtn) activeBtn.classList.add('active');
-}
-
-// Carregar Desafio na Tela
 function carregarDesafio(index) {
     desafioAtual = DESAFIOS[index];
     document.getElementById('challenge-title').innerText = desafioAtual.titulo;
@@ -57,13 +45,11 @@ function carregarDesafio(index) {
     document.getElementById('challenge-python-output').innerText = "Aguardando execução...";
 }
 
-// Executar Sandbox Livre
 async function runFreePython() {
     const code = document.getElementById('free-python-code').value;
     const outputElem = document.getElementById('free-python-output');
     outputElem.innerText = "Executando no Python...";
     
-    // Salva no LocalStorage
     localStorage.setItem('codequest_sandbox_code', code);
     
     const res = await executePythonCode(code);
@@ -76,7 +62,6 @@ function clearFreeEditor() {
     localStorage.removeItem('codequest_sandbox_code');
 }
 
-// Executar Teste do Bug Hunt
 async function runChallengePython() {
     const code = document.getElementById('challenge-python-code').value;
     const outputElem = document.getElementById('challenge-python-output');
@@ -86,7 +71,6 @@ async function runChallengePython() {
     outputElem.innerText = res.output;
 }
 
-// Submeter e Validar Resposta
 async function submitChallenge() {
     const code = document.getElementById('challenge-python-code').value;
     const outputElem = document.getElementById('challenge-python-output');
@@ -100,7 +84,11 @@ async function submitChallenge() {
         
         if (saidaObtida === saidaEsperada) {
             outputElem.innerText = `SUCESSO! Parabéns!\n\nSaída Obtida: ${saidaObtida}\nSaída Esperada: ${saidaEsperada}`;
-            alert("🎉 Desafio Concluído com Sucesso!");
+            if (typeof mostrarNotificacao === 'function') {
+                mostrarNotificacao("🎉 Desafio Concluído com Sucesso!", "sucesso");
+            } else {
+                alert("🎉 Desafio Concluído com Sucesso!");
+            }
         } else {
             outputElem.innerText = `RESPOSTA INCORRETA!\n\nSaída do seu Código: "${saidaObtida}"\nSaída Esperada: "${saidaEsperada}"\n\nAjuste a lógica e tente novamente!`;
         }
@@ -109,14 +97,10 @@ async function submitChallenge() {
     }
 }
 
-// Inicialização da Página
 document.addEventListener("DOMContentLoaded", () => {
-    // Restaurar código salvo no Sandbox
     const savedCode = localStorage.getItem('codequest_sandbox_code');
     if (savedCode) {
         document.getElementById('free-python-code').value = savedCode;
     }
-    
-    // Carregar o primeiro desafio por padrão
     carregarDesafio(0);
 });

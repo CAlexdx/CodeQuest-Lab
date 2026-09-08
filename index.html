@@ -3,179 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeQuest Lab</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="static/logo2.png">
-  
+  <title>CodeQuest LAB</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
 </head>
 <body>
 
-  <!-- Topo da Aplicação -->
-  <header class="cq-header">
-    <div class="logo-container">
-      <img src="static/logo2.png" alt="Logo CodeQuest LAB" class="header-logo">
-      <div class="logo">CodeQuest <span>LAB</span></div>
-      <span class="slogan-text">Aprenda programação na prática</span>
+  <!-- BARRA SUPERIOR (LOGO ESQUERDA + ABAS DIREITA) -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <div class="logo">
+        <img src="static/logo2.png" alt="CodeQuest LAB Logo" class="logo-img">
+        <h2>CodeQuest <span>LAB</span></h2>
+      </div>
+      <span class="divider">|</span>
+      <span class="tagline">Aprenda programação na prática</span>
     </div>
-    
+
     <nav class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('sandbox-tab')">Sandbox Python</button>
-      <button class="tab-btn" onclick="switchTab('challenges-tab')">Desafios Bug Hunt</button>
-      <button class="tab-btn" onclick="switchTab('css-tab')">Studio CSS</button>
+      <button class="nav-btn active" onclick="trocarAba('tab-python', this)">Sandbox Python</button>
+      <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">Desafios Bug Hunt</button>
+      <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">Studio CSS</button>
     </nav>
   </header>
 
-  <!-- ABA 1: SANDBOX PYTHON LIVRE -->
-  <main id="sandbox-tab" class="tab-content active">
-    <div class="toolbar">
-      <span class="tool-title">Ambiente Livre Python 3.11</span>
-      <div class="actions">
-        <button class="btn btn-test" onclick="runFreePython()">Executar Código</button>
-        <button class="btn btn-secondary" onclick="clearFreeEditor()">Limpar</button>
+  <!-- ÁREA PRINCIPAL DA APLICAÇÃO -->
+  <main class="app-body">
+
+    <!-- 1. SANDBOX PYTHON -->
+    <section id="tab-python" class="tab-content active">
+      <div class="sub-header">
+        <div class="sub-header-left">
+          <h2>Ambiente Livre Python 3.11</h2>
+        </div>
+        <div class="sub-header-right">
+          <button class="btn btn-success" onclick="runFreePython()">Executar Código</button>
+          <button class="btn btn-secondary" onclick="clearFreeEditor()">Limpar</button>
+        </div>
       </div>
-    </div>
-    <div class="full-sandbox-container">
-      <div class="code-section">
-        <div class="editor-header">Editor de Código</div>
+
+      <div class="workspace-full">
+        <div class="section-bar">Editor de Código</div>
         <textarea id="free-python-code" class="code-editor" spellcheck="false"># Escreva qualquer código Python aqui e clique em Executar
 nome = "CodeQuest"
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
+
+        <div class="section-bar">Terminal de Saída</div>
+        <div class="terminal-box">
+          <pre id="free-python-output" class="terminal-text success">Aguardando execução...</pre>
+        </div>
       </div>
-      <div class="console-section">
-        <div class="console-header">Terminal de Saída</div>
-        <pre id="free-python-output" class="console-output">Aguardando execução...</pre>
-      </div>
-    </div>
-  </main>
+    </section>
 
-  <!-- ABA 2: DESAFIOS BUG HUNT -->
-  <main id="challenges-tab" class="tab-content">
-    <div class="toolbar">
-      <span class="badge" id="challenge-badge">Nível Básico</span>
-      
-      <!-- Seletor de Desafios -->
-      <select id="challenge-select" class="challenge-dropdown" onchange="carregarDesafio(this.value)">
-        <option value="0">Desafio 1: Par ou Ímpar</option>
-        <option value="1">Desafio 2: Fatorial</option>
-        <option value="2">Desafio 3: Maior Número</option>
-      </select>
-
-      <div class="actions">
-        <button class="btn btn-test" onclick="runChallengePython()">Testar Código</button>
-        <button class="btn btn-submit" onclick="submitChallenge()">Submeter Resposta</button>
-      </div>
-    </div>
-
-    <div class="editor-container">
-      <section class="problem-statement">
-        <h3 id="challenge-title">Desafio: Corrija o Par ou Ímpar</h3>
-        <p id="challenge-desc">Carregando descrição...</p>
-        
-        <h4>Entrada de Teste:</h4>
-        <pre id="challenge-input">4</pre>
-        <h4>Saída Esperada:</h4>
-        <pre id="challenge-expected">Par</pre>
-      </section>
-
-      <section class="code-section">
-        <div class="editor-header">Código com Bug</div>
-        <textarea id="challenge-python-code" class="code-editor" spellcheck="false"></textarea>
-
-        <div class="console-header">Saída do Terminal</div>
-        <pre id="challenge-python-output" class="console-output">Aguardando execução...</pre>
-      </section>
-    </div>
-  </main>
-
-  <!-- ABA 3: STUDIO CSS MULTI-COMPONENTE -->
-  <main id="css-tab" class="tab-content">
-    <div class="studio-grid">
-      
-      <!-- PAINEL DE CONTROLES -->
-      <section class="controls-panel">
-        <div class="panel-header" style="margin-bottom: 15px;">
-          <h3>Ajustes do Componente</h3>
-          <select id="css-component-select" class="challenge-dropdown" onchange="alterarComponenteCSS(this.value)">
-            <option value="botao">Componente: Botão</option>
-            <option value="card">Componente: Card / Container</option>
-            <option value="input">Componente: Campo de Texto</option>
-            <option value="badge">Componente: Badge / Tag</option>
+    <!-- 2. DESAFIOS BUG HUNT -->
+    <section id="tab-bughunt" class="tab-content">
+      <div class="sub-header">
+        <div class="sub-header-left">
+          <span id="challenge-badge" class="badge badge-blue">Nível Básico</span>
+          <select id="challenge-select" class="select-dropdown" onchange="carregarDesafio(this.value)">
+            <option value="0">Desafio 1: Par ou Ímpar</option>
+            <option value="1">Desafio 2: Cálculo de Fatorial</option>
+            <option value="2">Desafio 3: Maior Número</option>
           </select>
         </div>
-
-        <div class="control-group">
-          <label>Texto do Componente:</label>
-          <input type="text" id="css-text-input" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+        <div class="sub-header-right">
+          <button class="btn btn-success" onclick="runChallengePython()">Testar Código</button>
+          <button class="btn btn-primary" onclick="submitChallenge()">Submeter Resposta</button>
         </div>
+      </div>
 
-        <div class="control-row" style="display: flex; gap: 10px;">
-          <div class="control-group" style="flex: 1;">
-            <label>Cor de Fundo:</label>
-            <input type="color" id="css-bg-color" value="#2563eb" onchange="atualizarPreviewCSS()">
+      <div class="workspace-split">
+        <!-- Sidebar com Detalhes do Desafio -->
+        <aside class="sidebar-details">
+          <h3 id="challenge-title">Desafio 1: Corrija o Par ou Ímpar</h3>
+          <p id="challenge-desc">O código ao lado deveria ler um número inteiro e imprimir se ele é <strong>Par</strong> ou <strong>Ímpar</strong>. Entretanto, o código contém um erro no tipo de dado de entrada e no operador matemático.</p>
+
+          <div class="info-group">
+            <label>Entrada de Teste:</label>
+            <div id="challenge-input" class="input-display">4</div>
           </div>
-          <div class="control-group" style="flex: 1;">
-            <label>Cor do Texto:</label>
-            <input type="color" id="css-text-color" value="#ffffff" onchange="atualizarPreviewCSS()">
+
+          <div class="info-group">
+            <label>Saída Esperada:</label>
+            <div id="challenge-expected" class="input-display highlight-green">Par</div>
           </div>
-          <div class="control-group" style="flex: 1;">
-            <label>Cor da Borda:</label>
-            <input type="color" id="css-border-color" value="#3b82f6" onchange="atualizarPreviewCSS()">
-          </div>
-        </div>
+        </aside>
 
-        <div class="control-group">
-          <label>Padding Vertical: <span id="lbl-padding-v">12px</span></label>
-          <input type="range" id="css-padding-v" min="0" max="50" value="12" oninput="atualizarPreviewCSS()">
-        </div>
+        <!-- Editor e Terminal do Bug Hunt -->
+        <div class="main-editor-pane">
+          <div class="section-bar">Código com Bug</div>
+          <textarea id="challenge-python-code" class="code-editor" spellcheck="false"># Corrija os erros neste código
+numero = input()
 
-        <div class="control-group">
-          <label>Padding Horizontal: <span id="lbl-padding-h">24px</span></label>
-          <input type="range" id="css-padding-h" min="0" max="60" value="24" oninput="atualizarPreviewCSS()">
-        </div>
+if numero / 2 == 0:
+    print("Par")
+else:
+    print("Impar")</textarea>
 
-        <div class="control-group">
-          <label>Arredondamento (Border Radius): <span id="lbl-radius">8px</span></label>
-          <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
-        </div>
-
-        <div class="control-group">
-          <label>Espessura da Borda: <span id="lbl-border-width">2px</span></label>
-          <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
-        </div>
-
-        <div class="control-group">
-          <label>Sombra (Box Shadow): <span id="lbl-shadow">10px</span></label>
-          <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
-        </div>
-      </section>
-
-      <!-- PREVIEW E CÓDIGO -->
-      <section class="display-panel">
-        <div class="preview-box">
-          <h3>Visualização da Interface</h3>
-          <div id="css-preview-container" class="preview-canvas">
-            <!-- Elemento renderizado dinamicamente via JS -->
+          <div class="section-bar">Saída do Terminal</div>
+          <div class="terminal-box">
+            <pre id="challenge-python-output" class="terminal-text muted">Aguardando execução...</pre>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="code-box">
-          <h3>Código CSS Gerado</h3>
-          <textarea id="generated-css-code" readonly class="css-code-area"></textarea>
-          <button class="btn btn-submit" onclick="copiarCSS()">Copiar Código CSS</button>
+    <!-- 3. STUDIO CSS -->
+    <section id="tab-studiocss" class="tab-content">
+      <div class="sub-header">
+        <div class="sub-header-left">
+          <h2>Studio CSS Component Builder</h2>
         </div>
-      </section>
+      </div>
 
-    </div>
+      <div class="studio-workspace">
+        <aside class="studio-sidebar">
+          <h3>Ajustes do Componente</h3>
+
+          <div class="control-group">
+            <label>Componente:</label>
+            <select id="css-component-select" class="select-dropdown full-width" onchange="alterarComponenteCSS(this.value)">
+              <option value="botao">Botão</option>
+              <option value="card">Card</option>
+              <option value="input">Input</option>
+              <option value="badge">Badge</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label>Texto do Componente:</label>
+            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="color-row">
+            <div class="control-group">
+              <label>Fundo:</label>
+              <input type="color" id="css-bg-color" value="#2563eb" oninput="atualizarPreviewCSS()">
+            </div>
+            <div class="control-group">
+              <label>Texto:</label>
+              <input type="color" id="css-text-color" value="#ffffff" oninput="atualizarPreviewCSS()">
+            </div>
+            <div class="control-group">
+              <label>Borda:</label>
+              <input type="color" id="css-border-color" value="#3b82f6" oninput="atualizarPreviewCSS()">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Tamanho da Fonte (px):</label>
+              <span id="lbl-font-size" class="range-val">16px</span>
+            </div>
+            <input type="range" id="css-font-size" min="12" max="32" value="16" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Padding Vertical (px):</label>
+              <span id="lbl-padding-v" class="range-val">12px</span>
+            </div>
+            <input type="range" id="css-padding-v" min="4" max="40" value="12" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Padding Horizontal (px):</label>
+              <span id="lbl-padding-h" class="range-val">24px</span>
+            </div>
+            <input type="range" id="css-padding-h" min="8" max="60" value="24" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Border Radius (px):</label>
+              <span id="lbl-radius" class="range-val">8px</span>
+            </div>
+            <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Espessura da Borda (px):</label>
+              <span id="lbl-border-width" class="range-val">2px</span>
+            </div>
+            <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Estilo da Borda:</label>
+            <select id="css-border-style" class="select-dropdown full-width" onchange="atualizarPreviewCSS()">
+              <option value="solid">Sólida</option>
+              <option value="dashed">Tracejada</option>
+              <option value="dotted">Pontilhada</option>
+              <option value="none">Nenhuma</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label>Sombra (px):</label>
+              <span id="lbl-shadow" class="range-val">10px</span>
+            </div>
+            <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group checkbox-group">
+            <label><input type="checkbox" id="css-include-hover" checked onchange="atualizarPreviewCSS()"> Incluir efeito :hover</label>
+          </div>
+        </aside>
+
+        <div class="studio-main">
+          <div id="css-preview-container" class="preview-box">
+            <!-- Componente gerado dinamicamente -->
+          </div>
+
+          <div class="code-export-box">
+            <div class="code-export-header">
+              <h3>Código CSS Gerado</h3>
+              <button class="btn btn-primary btn-sm" onclick="copiarCSS()">Copiar CSS</button>
+            </div>
+            <textarea id="generated-css-code" class="code-editor css-code" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <!-- SCRIPTS DA APLICAÇÃO -->
+  <!-- Container de Notificações Toast -->
+  <div id="toast-notification" class="toast-container"></div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <script src="js/ui-utils.js"></script>
   <script src="js/pyodide-engine.js"></script>
-  <script src="js/css-studio.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/css-studio.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
