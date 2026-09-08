@@ -1,0 +1,96 @@
+:root {
+  --bg-dark: #0b0f19;
+  --panel-bg: #151c2c;
+  --accent-blue: #38bdf8;
+  --green-btn: #16a34a;
+  --text-main: #f1f5f9;
+  --border-color: #273549;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+body { background-color: var(--bg-dark); color: var(--text-main); }
+
+/* Header e Logo */
+.cq-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 24px; background: #060911; border-bottom: 1px solid var(--border-color);
+}
+.logo-container { display: flex; align-items: center; gap: 16px; }
+.logo { font-size: 1.2rem; font-weight: bold; color: #fff; }
+.logo span { color: var(--accent-blue); }
+.slogan-text { font-size: 0.85rem; color: #64748b; border-left: 1px solid var(--border-color); padding-left: 12px; }
+.slogan-img { height: 28px; }
+
+/* Navegacao */
+.tab-btn {
+  background: transparent; border: 1px solid transparent; color: #94a3b8; padding: 8px 16px;
+  cursor: pointer; font-weight: 600; border-radius: 6px; margin-left: 6px;
+}
+.tab-btn.active, .tab-btn:hover { background: var(--panel-bg); color: #fff; border-color: var(--border-color); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Barra de Ferramentas */
+.toolbar {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--panel-bg); padding: 10px 20px; border-bottom: 1px solid var(--border-color);
+}
+.badge { background: #0284c7; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+.tool-title { font-weight: bold; font-size: 0.95rem; }
+.actions { margin-left: auto; display: flex; gap: 8px; }
+
+.btn { border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; }
+.btn-test { background: var(--green-btn); }
+.btn-submit { background: #2563eb; }
+.btn-secondary { background: #334155; }
+
+/* Sandbox Livre */
+.full-sandbox-container { display: grid; grid-template-rows: 1fr 200px; height: calc(100vh - 110px); }
+
+/* Layout Editor e Console */
+.editor-container { display: grid; grid-template-columns: 350px 1fr; height: calc(100vh - 110px); }
+.problem-statement { padding: 20px; border-right: 1px solid var(--border-color); background: var(--bg-dark); overflow-y: auto; }
+.problem-statement h3 { margin-bottom: 10px; color: var(--accent-blue); }
+.problem-statement p, .problem-statement pre { margin-bottom: 12px; font-size: 0.9rem; line-height: 1.4; }
+.problem-statement pre { background: var(--panel-bg); padding: 8px; border-radius: 4px; color: #4ade80; }
+
+.code-section { display: flex; flex-direction: column; background: #050811; }
+.console-section { display: flex; flex-direction: column; background: #050811; border-top: 1px solid var(--border-color); }
+.editor-header, .console-header {
+  background: var(--panel-bg); padding: 6px 16px; font-size: 0.8rem; color: var(--accent-blue); font-weight: bold;
+}
+.code-editor {
+  flex: 1; background: #050811; color: #38bdf8; font-family: monospace;
+  font-size: 0.95rem; padding: 16px; border: none; outline: none; resize: none;
+}
+.console-output {
+  flex: 1; background: #020617; color: #4ade80; font-family: monospace;
+  padding: 12px; border: none; overflow-y: auto; margin: 0; font-size: 0.85rem;
+}
+
+/* CSS Studio */
+.css-studio-grid { display: grid; grid-template-columns: 1fr 1fr; padding: 20px; gap: 20px; }
+.controls-panel, .preview-panel { background: var(--panel-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+.controls-panel label { display: block; margin-top: 12px; font-size: 0.85rem; color: #94a3b8; }
+.controls-panel input[type="range"], .controls-panel input[type="text"], .controls-panel input[type="color"] {
+  width: 100%; margin-top: 6px; background: #0b0f19; border: 1px solid var(--border-color); color: #fff; padding: 6px; border-radius: 4px;
+}
+.preview-box { height: 200px; display: flex; align-items: center; justify-content: center; background: #0b0f19; border-radius: 8px; margin: 15px 0; border: 1px solid var(--border-color); }
+.preview-btn { border-style: solid; transition: 0.1s; cursor: pointer; }
+.css-code-area { width: 100%; height: 120px; background: #050811; color: var(--accent-blue); padding: 10px; font-family: monospace; border-radius: 6px; border: 1px solid var(--border-color); margin: 10px 0; }
+
+/* Container da Logo */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Limita a imagem da logo para não estourar o cabeçalho */
+.header-logo {
+  height: 40px;        /* Altura fixa adequada para o cabeçalho */
+  max-height: 40px;
+  width: auto;         /* Mantém a proporção sem distorcer */
+  object-fit: contain;
+}

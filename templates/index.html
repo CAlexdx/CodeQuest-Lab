@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeQuest Lab</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="static/logo2.png">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body>
+
+  <!-- Topo da Aplicacao -->
+  <header class="cq-header">
+    <div class="logo-container">
+      <img src="static/logo2.png" alt="Logo CodeQuest LAB" class="header-logo">
+      <div class="logo">CodeQuest <span>LAB</span></div>
+      <span class="slogan-text">Aprenda programacao na pratica</span>
+    </div>
+    
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('sandbox-tab')">Sandbox Python</button>
+      <button class="tab-btn" onclick="switchTab('challenges-tab')">Desafios Bug Hunt</button>
+      <button class="tab-btn" onclick="switchTab('css-tab')">Studio CSS</button>
+    </nav>
+  </header>
+
+  <!-- ABA 1: SANDBOX PYTHON LIVRE -->
+  <main id="sandbox-tab" class="tab-content active">
+    <div class="toolbar">
+      <span class="tool-title">Ambiente Livre Python 3.11</span>
+      <div class="actions">
+        <button class="btn btn-test" onclick="runFreePython()">Executar Codigo</button>
+        <button class="btn btn-secondary" onclick="clearFreeEditor()">Limpar</button>
+      </div>
+    </div>
+    <div class="full-sandbox-container">
+      <div class="code-section">
+        <div class="editor-header">Editor de Codigo</div>
+        <textarea id="free-python-code" class="code-editor" spellcheck="false"># Escreva qualquer codigo Python aqui e clique em Executar
+nome = "CodeQuest"
+for i in range(3):
+    print(f"Bem-vindo ao {nome}!")</textarea>
+      </div>
+      <div class="console-section">
+        <div class="console-header">Terminal de Saida</div>
+        <pre id="free-python-output" class="console-output">Aguardando execucao...</pre>
+      </div>
+    </div>
+  </main>
+
+  <!-- ABA 2: DESAFIOS BUG HUNT (PAR OU IMPAR) -->
+  <main id="challenges-tab" class="tab-content">
+    <div class="toolbar">
+      <span class="badge">Nivel Basico</span>
+      <span class="tool-title">Desafio: Corrija o Par ou Impar</span>
+      <div class="actions">
+        <button class="btn btn-test" onclick="runChallengePython()">Testar Codigo</button>
+        <button class="btn btn-submit" onclick="submitChallenge()">Submeter Resposta</button>
+      </div>
+    </div>
+
+    <div class="editor-container">
+      <section class="problem-statement">
+        <h3>Descricao do Problema</h3>
+        <p>O codigo ao lado deveria ler um numero inteiro e imprimir se ele e <strong>Par</strong> ou <strong>Impar</strong>.</p>
+        <p>Entretanto, o codigo contem erros de tipo de dado e operador matematico. Corrija o script para que funcione corretamente.</p>
+        
+        <h4>Entrada de Teste:</h4>
+        <pre>4</pre>
+        <h4>Saida Esperada:</h4>
+        <pre>Par</pre>
+      </section>
+
+      <section class="code-section">
+        <div class="editor-header">Codigo com Bug</div>
+        <textarea id="challenge-python-code" class="code-editor" spellcheck="false"># Corrija os erros neste codigo
+numero = input()
+
+if numero / 2 == 0:
+    print("Par")
+else:
+    print("Impar")</textarea>
+
+        <div class="console-header">Saida do Terminal</div>
+        <pre id="challenge-python-output" class="console-output">Aguardando execucao...</pre>
+      </section>
+    </div>
+  </main>
+
+  <!-- ABA 3: STUDIO CSS MELHORADO -->
+  <main id="css-tab" class="tab-content">
+    <div class="css-studio-grid">
+      <!-- Painel de Ajustes -->
+      <section class="controls-panel">
+        <h3>Ajustes do Componente</h3>
+        
+        <label>Texto do Botao:</label>
+        <input type="text" id="css-btn-text" value="Clique Aqui">
+
+        <label>Cor de Fundo:</label>
+        <input type="color" id="css-bg-color" value="#2563eb">
+
+        <label>Cor do Texto:</label>
+        <input type="color" id="css-text-color" value="#ffffff">
+
+        <label>Espacamento Interno (Padding): <span id="val-padding">12px 24px</span></label>
+        <input type="range" id="css-padding" min="6" max="30" value="12">
+
+        <label>Arredondamento (Border Radius): <span id="val-radius">8px</span></label>
+        <input type="range" id="css-radius" min="0" max="40" value="8">
+
+        <label>Sombra (Box Shadow): <span id="val-shadow">10px</span></label>
+        <input type="range" id="css-shadow" min="0" max="30" value="10">
+
+        <label>Borda (Border Width): <span id="val-border">2px</span></label>
+        <input type="range" id="css-border-width" min="0" max="10" value="2">
+
+        <label>Cor da Borda:</label>
+        <input type="color" id="css-border-color" value="#3b82f6">
+      </section>
+
+      <!-- Painel de Resultado -->
+      <section class="preview-panel">
+        <h3>Visualizacao da Interface</h3>
+        <div class="preview-box">
+          <button id="target-element" class="preview-btn">Clique Aqui</button>
+        </div>
+
+        <h3>Codigo CSS Gerado</h3>
+        <textarea id="css-output" readonly class="css-code-area"></textarea>
+        <button class="btn btn-secondary" onclick="copyCSS()">Copiar Codigo CSS</button>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/pyodide-engine.js"></script>
+  <script src="js/css-studio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
