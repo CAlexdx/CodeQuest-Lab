@@ -52,41 +52,41 @@ for i in range(3):
     </div>
   </main>
 
-  <!-- ABA 2: DESAFIOS BUG HUNT (PAR OU IMPAR) -->
+ <!-- ABA 2: DESAFIOS BUG HUNT -->
   <main id="challenges-tab" class="tab-content">
     <div class="toolbar">
-      <span class="badge">Nivel Basico</span>
-      <span class="tool-title">Desafio: Corrija o Par ou Impar</span>
+      <span class="badge" id="challenge-badge">Nível Básico</span>
+      
+      <!-- Seletor de Desafios -->
+      <select id="challenge-select" class="challenge-dropdown" onchange="carregarDesafio(this.value)">
+        <option value="0">Desafio 1: Par ou Ímpar</option>
+        <option value="1">Desafio 2: Fatorial</option>
+        <option value="2">Desafio 3: Maior Número</option>
+      </select>
+
       <div class="actions">
-        <button class="btn btn-test" onclick="runChallengePython()">Testar Codigo</button>
+        <button class="btn btn-test" onclick="runChallengePython()">Testar Código</button>
         <button class="btn btn-submit" onclick="submitChallenge()">Submeter Resposta</button>
       </div>
     </div>
 
     <div class="editor-container">
       <section class="problem-statement">
-        <h3>Descricao do Problema</h3>
-        <p>O codigo ao lado deveria ler um numero inteiro e imprimir se ele e <strong>Par</strong> ou <strong>Impar</strong>.</p>
-        <p>Entretanto, o codigo contem erros de tipo de dado e operador matematico. Corrija o script para que funcione corretamente.</p>
+        <h3 id="challenge-title">Desafio: Corrija o Par ou Ímpar</h3>
+        <p id="challenge-desc">Carregando descrição...</p>
         
         <h4>Entrada de Teste:</h4>
-        <pre>4</pre>
-        <h4>Saida Esperada:</h4>
-        <pre>Par</pre>
+        <pre id="challenge-input">4</pre>
+        <h4>Saída Esperada:</h4>
+        <pre id="challenge-expected">Par</pre>
       </section>
 
       <section class="code-section">
-        <div class="editor-header">Codigo com Bug</div>
-        <textarea id="challenge-python-code" class="code-editor" spellcheck="false"># Corrija os erros neste codigo
-numero = input()
+        <div class="editor-header">Código com Bug</div>
+        <textarea id="challenge-python-code" class="code-editor" spellcheck="false"></textarea>
 
-if numero / 2 == 0:
-    print("Par")
-else:
-    print("Impar")</textarea>
-
-        <div class="console-header">Saida do Terminal</div>
-        <pre id="challenge-python-output" class="console-output">Aguardando execucao...</pre>
+        <div class="console-header">Saída do Terminal</div>
+        <pre id="challenge-python-output" class="console-output">Aguardando execução...</pre>
       </section>
     </div>
   </main>
