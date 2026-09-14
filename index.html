@@ -2,98 +2,360 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
   <title>CodeQuest LAB</title>
+
   <link rel="icon" type="image/png" href="static/logo2.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-  <!-- BARRA SUPERIOR (LOGO ESQUERDA + ABAS DIREITA) -->
+  <!-- =====================================================
+       BARRA SUPERIOR
+       ===================================================== -->
   <header class="top-bar">
+
     <div class="top-bar-left">
+
       <div class="logo">
-        <img src="static/logo2.png" alt="CodeQuest LAB Logo" class="logo-img">
-        <h2>CodeQuest <span>LAB</span></h2>
+        <img
+          src="static/logo2.png"
+          alt="CodeQuest LAB Logo"
+          class="logo-img"
+        >
+
+        <h2>
+          CodeQuest <span>LAB</span>
+        </h2>
       </div>
+
       <span class="divider">|</span>
-      <span class="tagline">Aprenda programação na prática</span>
+
+      <span class="tagline">
+        Aprenda programação na prática
+      </span>
+
     </div>
 
     <nav class="nav-tabs">
-      <button class="nav-btn active" onclick="trocarAba('tab-python', this)">Sandbox Python</button>
-      <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">Desafios Bug Hunt</button>
-      <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">Studio CSS</button>
+
+      <button
+        class="nav-btn active"
+        onclick="trocarAba('tab-python', this)"
+      >
+        Sandbox
+      </button>
+
+      <button
+        class="nav-btn"
+        onclick="trocarAba('tab-bughunt', this)"
+      >
+        Desafios Bug Hunt
+      </button>
+
+      <button
+        class="nav-btn"
+        onclick="trocarAba('tab-studiocss', this)"
+      >
+        Studio CSS
+      </button>
+
     </nav>
+
   </header>
 
-  <!-- ÁREA PRINCIPAL DA APLICAÇÃO -->
+
+  <!-- =====================================================
+       ÁREA PRINCIPAL
+       ===================================================== -->
   <main class="app-body">
 
-    <!-- 1. SANDBOX PYTHON -->
-    <section id="tab-python" class="tab-content active">
-      <div class="sub-header">
-        <div class="sub-header-left">
-          <h2>Ambiente Livre Python 3.11</h2>
+
+    <!-- ===================================================
+         1. SANDBOX GERAL
+         =================================================== -->
+    <section
+      id="tab-python"
+      class="tab-content active"
+    >
+
+      <div class="sub-header sandbox-header">
+
+        <div class="sub-header-left sandbox-controls-left">
+
+          <div>
+            <h2>Sandbox de Código</h2>
+
+            <span class="sub-description">
+              Teste códigos livremente no navegador
+            </span>
+          </div>
+
+          <select
+            id="sandbox-language"
+            class="select-dropdown sandbox-select"
+            onchange="alterarModoSandbox(this.value)"
+          >
+            <option value="python">
+              Python 3.11
+            </option>
+
+            <option value="web">
+              Web — HTML + CSS + JavaScript
+            </option>
+          </select>
+
+          <select
+            id="sandbox-example"
+            class="select-dropdown sandbox-select"
+            onchange="carregarExemploSandbox(this.value)"
+          >
+            <!-- Preenchido pelo JavaScript -->
+          </select>
+
         </div>
-        <div class="sub-header-right">
-          <button class="btn btn-success" onclick="runFreePython()">Executar Código</button>
-          <button class="btn btn-secondary" onclick="clearFreeEditor()">Limpar</button>
+
+        <div class="sub-header-right sandbox-actions">
+
+          <button
+            class="btn btn-success"
+            onclick="executarSandbox()"
+          >
+            Executar Código
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="clearSandbox()"
+          >
+            Limpar
+          </button>
+
         </div>
+
       </div>
 
-      <div class="workspace-full">
-        <div class="section-bar">Editor de Código</div>
-        <textarea id="free-python-code" class="code-editor" spellcheck="false"># Escreva qualquer código Python aqui e clique em Executar
+
+      <div class="sandbox-workspace">
+
+        <!-- EDITOR -->
+        <div class="sandbox-editor-pane">
+
+          <div class="section-bar">
+            <span id="sandbox-editor-title">
+              Editor Python
+            </span>
+
+            <span
+              id="sandbox-status"
+              class="editor-status"
+            >
+              Pronto
+            </span>
+          </div>
+
+          <textarea
+            id="free-python-code"
+            class="code-editor sandbox-code-editor"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          ># Escreva qualquer código Python aqui e clique em Executar
+
 nome = "CodeQuest"
+
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
 
-        <div class="section-bar">Terminal de Saída</div>
-        <div class="terminal-box">
-          <pre id="free-python-output" class="terminal-text success">Aguardando execução...</pre>
+          <!-- TERMINAL PYTHON -->
+          <div
+            id="sandbox-python-terminal"
+            class="sandbox-output-section"
+          >
+
+            <div class="section-bar">
+              Terminal de Saída
+            </div>
+
+            <div class="terminal-box sandbox-terminal">
+              <pre
+                id="free-python-output"
+                class="terminal-text success"
+              >Aguardando execução...</pre>
+            </div>
+
+          </div>
+
         </div>
+
+
+        <!-- PREVIEW WEB -->
+        <div
+          id="sandbox-web-preview-pane"
+          class="sandbox-preview-pane hidden"
+        >
+
+          <div class="section-bar">
+            Visualização do Código Web
+          </div>
+
+          <div class="browser-preview">
+
+            <div class="browser-toolbar">
+
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+
+              <span class="browser-address">
+                sandbox.local
+              </span>
+
+            </div>
+
+            <iframe
+              id="sandbox-web-preview"
+              title="Visualização do código Web"
+              sandbox="allow-scripts"
+            ></iframe>
+
+          </div>
+
+        </div>
+
       </div>
+
     </section>
 
-    <!-- 2. DESAFIOS BUG HUNT -->
-    <section id="tab-bughunt" class="tab-content">
+
+    <!-- ===================================================
+         2. BUG HUNT
+         =================================================== -->
+    <section
+      id="tab-bughunt"
+      class="tab-content"
+    >
+
       <div class="sub-header">
-        <div class="sub-header-left">
-          <span id="challenge-badge" class="badge badge-blue">Nível Básico</span>
-          <select id="challenge-select" class="select-dropdown" onchange="carregarDesafio(this.value)">
-            <option value="0">Desafio 1: Par ou Ímpar</option>
-            <option value="1">Desafio 2: Cálculo de Fatorial</option>
-            <option value="2">Desafio 3: Maior Número</option>
+
+        <div class="sub-header-left bughunt-header-left">
+
+          <span
+            id="challenge-badge"
+            class="badge badge-blue"
+          >
+            Nível Básico
+          </span>
+
+          <select
+            id="challenge-select"
+            class="select-dropdown"
+            onchange="carregarDesafio(this.value)"
+          >
+            <option value="0">
+              Desafio 1: Par ou Ímpar
+            </option>
+
+            <option value="1">
+              Desafio 2: Cálculo de Fatorial
+            </option>
+
+            <option value="2">
+              Desafio 3: Maior Número
+            </option>
           </select>
+
         </div>
+
         <div class="sub-header-right">
-          <button class="btn btn-success" onclick="runChallengePython()">Testar Código</button>
-          <button class="btn btn-primary" onclick="submitChallenge()">Submeter Resposta</button>
+
+          <button
+            class="btn btn-success"
+            onclick="runChallengePython()"
+          >
+            Testar Código
+          </button>
+
+          <button
+            class="btn btn-primary"
+            onclick="submitChallenge()"
+          >
+            Submeter Resposta
+          </button>
+
         </div>
+
       </div>
 
+
       <div class="workspace-split">
-        <!-- Sidebar com Detalhes do Desafio -->
+
+        <!-- SIDEBAR -->
         <aside class="sidebar-details">
-          <h3 id="challenge-title">Desafio 1: Corrija o Par ou Ímpar</h3>
-          <p id="challenge-desc">O código ao lado deveria ler um número inteiro e imprimir se ele é <strong>Par</strong> ou <strong>Ímpar</strong>. Entretanto, o código contém um erro no tipo de dado de entrada e no operador matemático.</p>
+
+          <h3 id="challenge-title">
+            Desafio 1: Corrija o Par ou Ímpar
+          </h3>
+
+          <p id="challenge-desc">
+            O código ao lado deveria ler um número inteiro e
+            imprimir se ele é <strong>Par</strong> ou
+            <strong>Ímpar</strong>. Entretanto, o código
+            contém um erro no tipo de dado de entrada e no
+            operador matemático.
+          </p>
 
           <div class="info-group">
-            <label>Entrada de Teste:</label>
-            <div id="challenge-input" class="input-display">4</div>
+
+            <label>
+              Entrada de Teste:
+            </label>
+
+            <div
+              id="challenge-input"
+              class="input-display"
+            >
+              4
+            </div>
+
           </div>
 
           <div class="info-group">
-            <label>Saída Esperada:</label>
-            <div id="challenge-expected" class="input-display highlight-green">Par</div>
+
+            <label>
+              Saída Esperada:
+            </label>
+
+            <div
+              id="challenge-expected"
+              class="input-display highlight-green"
+            >
+              Par
+            </div>
+
           </div>
+
         </aside>
 
-        <!-- Editor e Terminal do Bug Hunt -->
+
+        <!-- EDITOR -->
         <div class="main-editor-pane">
-          <div class="section-bar">Código com Bug</div>
-          <textarea id="challenge-python-code" class="code-editor" spellcheck="false"># Corrija os erros neste código
+
+          <div class="section-bar">
+            Código com Bug
+          </div>
+
+          <textarea
+            id="challenge-python-code"
+            class="code-editor"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          ># Corrija os erros neste código
 numero = input()
 
 if numero / 2 == 0:
@@ -101,146 +363,499 @@ if numero / 2 == 0:
 else:
     print("Impar")</textarea>
 
-          <div class="section-bar">Saída do Terminal</div>
-          <div class="terminal-box">
-            <pre id="challenge-python-output" class="terminal-text muted">Aguardando execução...</pre>
+          <div class="section-bar">
+            Saída do Terminal
           </div>
+
+          <div class="terminal-box">
+
+            <pre
+              id="challenge-python-output"
+              class="terminal-text muted"
+            >Aguardando execução...</pre>
+
+          </div>
+
         </div>
+
       </div>
+
     </section>
 
-    <!-- 3. STUDIO CSS -->
-    <section id="tab-studiocss" class="tab-content">
+
+    <!-- ===================================================
+         3. STUDIO CSS
+         =================================================== -->
+    <section
+      id="tab-studiocss"
+      class="tab-content"
+    >
+
       <div class="sub-header">
+
         <div class="sub-header-left">
-          <h2>Studio CSS Component Builder</h2>
+
+          <div>
+            <h2>Studio CSS Component Builder</h2>
+
+            <span class="sub-description">
+              Crie e teste componentes visuais
+            </span>
+          </div>
+
         </div>
+
       </div>
 
+
       <div class="studio-workspace">
+
+        <!-- SIDEBAR -->
         <aside class="studio-sidebar">
-          <h3>Ajustes do Componente</h3>
+
+          <h3>
+            Ajustes do Componente
+          </h3>
+
 
           <div class="control-group">
-            <label>Componente:</label>
-            <select id="css-component-select" class="select-dropdown full-width" onchange="alterarComponenteCSS(this.value)">
-              <option value="botao">Botão</option>
-              <option value="card">Card</option>
-              <option value="input">Input</option>
-              <option value="badge">Badge</option>
+
+            <label>
+              Componente:
+            </label>
+
+            <select
+              id="css-component-select"
+              class="select-dropdown full-width"
+              onchange="alterarComponenteCSS(this.value)"
+            >
+
+              <option value="botao">
+                Botão
+              </option>
+
+              <option value="card">
+                Card
+              </option>
+
+              <option value="input">
+                Input
+              </option>
+
+              <option value="badge">
+                Badge
+              </option>
+
+              <option value="navbar">
+                Navbar
+              </option>
+
+              <option value="alerta">
+                Alerta
+              </option>
+
             </select>
+
           </div>
 
+
           <div class="control-group">
-            <label>Texto do Componente:</label>
-            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+
+            <label>
+              Texto do Componente:
+            </label>
+
+            <input
+              type="text"
+              id="css-text-input"
+              class="input-text"
+              value="Clique Aqui"
+              maxlength="100"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
+
 
           <div class="color-row">
+
             <div class="control-group">
-              <label>Fundo:</label>
-              <input type="color" id="css-bg-color" value="#2563eb" oninput="atualizarPreviewCSS()">
+
+              <label>
+                Fundo:
+              </label>
+
+              <input
+                type="color"
+                id="css-bg-color"
+                value="#2563eb"
+                oninput="atualizarPreviewCSS()"
+              >
+
             </div>
+
+
             <div class="control-group">
-              <label>Texto:</label>
-              <input type="color" id="css-text-color" value="#ffffff" oninput="atualizarPreviewCSS()">
+
+              <label>
+                Texto:
+              </label>
+
+              <input
+                type="color"
+                id="css-text-color"
+                value="#ffffff"
+                oninput="atualizarPreviewCSS()"
+              >
+
             </div>
+
+
             <div class="control-group">
-              <label>Borda:</label>
-              <input type="color" id="css-border-color" value="#3b82f6" oninput="atualizarPreviewCSS()">
+
+              <label>
+                Borda:
+              </label>
+
+              <input
+                type="color"
+                id="css-border-color"
+                value="#3b82f6"
+                oninput="atualizarPreviewCSS()"
+              >
+
             </div>
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Tamanho da Fonte (px):</label>
-              <span id="lbl-font-size" class="range-val">16px</span>
+
+              <label>
+                Tamanho da Fonte (px):
+              </label>
+
+              <span
+                id="lbl-font-size"
+                class="range-val"
+              >
+                16px
+              </span>
+
             </div>
-            <input type="range" id="css-font-size" min="12" max="32" value="16" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-font-size"
+              min="12"
+              max="32"
+              value="16"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Padding Vertical (px):</label>
-              <span id="lbl-padding-v" class="range-val">12px</span>
+
+              <label>
+                Peso da Fonte:
+              </label>
+
+              <span
+                id="lbl-font-weight"
+                class="range-val"
+              >
+                600
+              </span>
+
             </div>
-            <input type="range" id="css-padding-v" min="4" max="40" value="12" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-font-weight"
+              min="300"
+              max="900"
+              step="100"
+              value="600"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Padding Horizontal (px):</label>
-              <span id="lbl-padding-h" class="range-val">24px</span>
+
+              <label>
+                Padding Vertical (px):
+              </label>
+
+              <span
+                id="lbl-padding-v"
+                class="range-val"
+              >
+                12px
+              </span>
+
             </div>
-            <input type="range" id="css-padding-h" min="8" max="60" value="24" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-padding-v"
+              min="4"
+              max="40"
+              value="12"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Border Radius (px):</label>
-              <span id="lbl-radius" class="range-val">8px</span>
+
+              <label>
+                Padding Horizontal (px):
+              </label>
+
+              <span
+                id="lbl-padding-h"
+                class="range-val"
+              >
+                24px
+              </span>
+
             </div>
-            <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-padding-h"
+              min="8"
+              max="60"
+              value="24"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Espessura da Borda (px):</label>
-              <span id="lbl-border-width" class="range-val">2px</span>
+
+              <label>
+                Border Radius (px):
+              </label>
+
+              <span
+                id="lbl-radius"
+                class="range-val"
+              >
+                8px
+              </span>
+
             </div>
-            <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-radius"
+              min="0"
+              max="50"
+              value="8"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
 
+
           <div class="control-group">
-            <label>Estilo da Borda:</label>
-            <select id="css-border-style" class="select-dropdown full-width" onchange="atualizarPreviewCSS()">
-              <option value="solid">Sólida</option>
-              <option value="dashed">Tracejada</option>
-              <option value="dotted">Pontilhada</option>
-              <option value="none">Nenhuma</option>
+
+            <div class="label-row">
+
+              <label>
+                Espessura da Borda (px):
+              </label>
+
+              <span
+                id="lbl-border-width"
+                class="range-val"
+              >
+                2px
+              </span>
+
+            </div>
+
+            <input
+              type="range"
+              id="css-border-width"
+              min="0"
+              max="10"
+              value="2"
+              oninput="atualizarPreviewCSS()"
+            >
+
+          </div>
+
+
+          <div class="control-group">
+
+            <label>
+              Estilo da Borda:
+            </label>
+
+            <select
+              id="css-border-style"
+              class="select-dropdown full-width"
+              onchange="atualizarPreviewCSS()"
+            >
+
+              <option value="solid">
+                Sólida
+              </option>
+
+              <option value="dashed">
+                Tracejada
+              </option>
+
+              <option value="dotted">
+                Pontilhada
+              </option>
+
+              <option value="none">
+                Nenhuma
+              </option>
+
             </select>
+
           </div>
 
+
           <div class="control-group">
+
             <div class="label-row">
-              <label>Sombra (px):</label>
-              <span id="lbl-shadow" class="range-val">10px</span>
+
+              <label>
+                Sombra (px):
+              </label>
+
+              <span
+                id="lbl-shadow"
+                class="range-val"
+              >
+                10px
+              </span>
+
             </div>
-            <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
+
+            <input
+              type="range"
+              id="css-shadow"
+              min="0"
+              max="30"
+              value="10"
+              oninput="atualizarPreviewCSS()"
+            >
+
           </div>
+
 
           <div class="control-group checkbox-group">
-            <label><input type="checkbox" id="css-include-hover" checked onchange="atualizarPreviewCSS()"> Incluir efeito :hover</label>
+
+            <label>
+
+              <input
+                type="checkbox"
+                id="css-include-hover"
+                checked
+                onchange="atualizarPreviewCSS()"
+              >
+
+              Incluir efeito :hover
+
+            </label>
+
           </div>
+
         </aside>
 
+
+        <!-- ÁREA PRINCIPAL -->
         <div class="studio-main">
-          <div id="css-preview-container" class="preview-box">
+
+          <div
+            id="css-preview-container"
+            class="preview-box"
+          >
             <!-- Componente gerado dinamicamente -->
           </div>
 
+
           <div class="code-export-box">
+
             <div class="code-export-header">
-              <h3>Código CSS Gerado</h3>
-              <button class="btn btn-primary btn-sm" onclick="copiarCSS()">Copiar CSS</button>
+
+              <h3>
+                Código CSS Gerado
+              </h3>
+
+              <button
+                class="btn btn-primary btn-sm"
+                onclick="copiarCSS()"
+              >
+                Copiar CSS
+              </button>
+
             </div>
-            <textarea id="generated-css-code" class="code-editor css-code" readonly></textarea>
+
+            <textarea
+              id="generated-css-code"
+              class="code-editor css-code"
+              readonly
+              spellcheck="false"
+            ></textarea>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
 
   </main>
 
-  <!-- Container de Notificações Toast -->
-  <div id="toast-notification" class="toast-container"></div>
 
-  <!-- SCRIPTS -->
+  <!-- =====================================================
+       TOAST
+       ===================================================== -->
+  <div
+    id="toast-notification"
+    class="toast-container"
+  ></div>
+
+
+  <!-- =====================================================
+       SCRIPTS
+       ===================================================== -->
+
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+
   <script src="js/ui-utils.js"></script>
+
   <script src="js/pyodide-engine.js"></script>
+
   <script src="js/app.js"></script>
+
   <script src="js/css-studio.js"></script>
+
   <script src="js/main.js"></script>
+
 </body>
 </html>
