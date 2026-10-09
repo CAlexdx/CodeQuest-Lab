@@ -1,93 +1,424 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeQuest Lab</title>
-    <!-- Substitua pelo caminho do seu CSS principal -->
-    <link rel="stylesheet" href="static/style.css"> 
-    <!-- Pyodide para rodar Python no navegador -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>CodeQuest LAB</title>
+
+  <link rel="icon" type="image/png" href="static/logo2.png">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* Banner do Modo Convidado (Alerta Superior) */
+    .guest-banner {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: #ffffff;
+      text-align: center;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .guest-banner a {
+      background: #ffffff;
+      color: #ea580c;
+      padding: 4px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+
+    .guest-banner a:hover {
+      background: #f1f5f9;
+    }
+  </style>
 </head>
+
 <body>
 
-    <!-- BANNER GUEST MODE -->
-    <div id="guest-banner" style="display: none; background: #f97316; color: white; text-align: center; padding: 12px; font-weight: bold; font-family: sans-serif;">
-        ⚠️ Você está no Modo Convidado. Teste livremente, mas seu XP e progresso não serão salvos. 
-        <a href="https://code-quest-bice.vercel.app/login?redirect=lab" style="color: #fff; text-decoration: underline; margin-left: 10px;">Fazer Login</a>
+  <!-- BANNER MODO CONVIDADO (Exibido quando não há token/login) -->
+  <div id="guest-banner" class="guest-banner" style="display: none;">
+    <span>⚠️ You are in Guest Mode. Your progress and XP will not be saved.</span>
+    <a href="https://code-quest-bice.vercel.app/login?redirect=lab">Fazer Login no CodeQuest</a>
+  </div>
+
+  <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
+  <header class="top-bar">
+
+    <div class="top-bar-left">
+      <div class="logo">
+        <img src="static/logo2.png" alt="CodeQuest LAB Logo" class="logo-img">
+        <h2>CodeQuest <span>LAB</span></h2>
+      </div>
+
+      <span class="divider">|</span>
+      <span class="tagline">Aprenda programação na prática</span>
     </div>
 
-    <header class="lab-header">
-        <h1>CodeQuest Lab 🧪</h1>
-        <p>Ambiente de experimentação e caça aos bugs.</p>
-    </header>
+    <nav class="nav-tabs" aria-label="Navegação Principal do LAB">
+      <button class="nav-btn active" onclick="trocarAba('tab-python', this)">
+        Sandbox
+      </button>
+      <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">
+        Desafios Bug Hunt
+      </button>
+      <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">
+        Studio CSS
+      </button>
+    </nav>
 
-    <main class="lab-container">
-        
-        <!-- SEÇÃO 1: STUDIO CSS -->
-        <section class="lab-section" id="studio-css">
-            <h2>🎨 Studio CSS</h2>
+  </header>
+
+
+  <!-- ÁREA PRINCIPAL -->
+  <main class="app-body">
+
+    <!-- 1. SANDBOX GERAL -->
+    <section id="tab-python" class="tab-content active">
+
+      <div class="sub-header sandbox-header">
+
+        <div class="sub-header-left sandbox-controls-left">
+          <div>
+            <h2>Sandbox de Código</h2>
+            <span class="sub-description">Teste códigos livremente no navegador</span>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <label for="sandbox-language" class="sr-only" style="display:none;">Linguagem do Sandbox</label>
+            <select id="sandbox-language" class="select-dropdown sandbox-select" onchange="alterarModoSandbox(this.value)">
+              <option value="python">Python 3.11</option>
+              <option value="web">Web — HTML + CSS + JavaScript</option>
+            </select>
+
+            <label for="sandbox-example" class="sr-only" style="display:none;">Exemplo de Código</label>
+            <select id="sandbox-example" class="select-dropdown sandbox-select" onchange="carregarExemploSandbox(this.value)">
+              <!-- Preenchido via JS -->
+            </select>
+          </div>
+        </div>
+
+        <div class="sub-header-right sandbox-actions">
+          <button class="btn btn-success" onclick="executarSandbox()">Executar Código</button>
+          <button class="btn btn-secondary" onclick="clearSandbox()">Limpar</button>
+        </div>
+
+      </div>
+
+      <div class="sandbox-workspace">
+
+        <!-- EDITOR PYTHON -->
+        <div class="sandbox-editor-pane">
+
+          <div class="section-bar">
+            <span id="sandbox-editor-title">Editor Python</span>
+            <span id="sandbox-status" class="editor-status">Pronto</span>
+          </div>
+
+          <label for="free-python-code" class="sr-only" style="display:none;">Editor de Código</label>
+          <textarea
+            id="free-python-code"
+            class="code-editor sandbox-code-editor"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          ># Escreva qualquer código Python aqui e clique em Executar
+
+nome = "CodeQuest"
+
+for i in range(3):
+    print(f"Bem-vindo ao {nome}!")</textarea>
+
+          <!-- TERMINAL PYTHON -->
+          <div id="sandbox-python-terminal" class="sandbox-output-section">
+            <div class="section-bar">Terminal de Saída</div>
+            <div class="terminal-box sandbox-terminal">
+              <pre id="free-python-output" class="terminal-text success">Aguardando execução...</pre>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PREVIEW WEB -->
+        <div id="sandbox-web-preview-pane" class="sandbox-preview-pane hidden">
+          <div class="section-bar">Visualização do Código Web</div>
+          <div class="browser-preview">
+            <div class="browser-toolbar">
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+              <span class="browser-dot"></span>
+              <span class="browser-address">sandbox.local</span>
+            </div>
+            <iframe id="sandbox-web-preview" title="Visualização do código Web" sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- 2. BUG HUNT -->
+    <section id="tab-bughunt" class="tab-content">
+
+      <div class="sub-header">
+
+        <div class="sub-header-left bughunt-header-left">
+          <span id="challenge-badge" class="badge badge-blue">Nível Básico</span>
+
+          <label for="challenge-select" class="sr-only" style="display:none;">Selecione o Desafio</label>
+          <select id="challenge-select" class="select-dropdown" onchange="carregarDesafio(this.value)">
+            <option value="0">Desafio 1: Par ou Ímpar</option>
+            <option value="1">Desafio 2: Cálculo de Fatorial</option>
+            <option value="2">Desafio 3: Maior Número</option>
+          </select>
+        </div>
+
+        <div class="sub-header-right">
+          <button class="btn btn-success" onclick="runChallengePython()">Testar Código</button>
+          <button class="btn btn-primary" onclick="submitChallenge()">Submeter Resposta</button>
+        </div>
+
+      </div>
+
+      <div class="workspace-split">
+
+        <!-- SIDEBAR DE DETALHES -->
+        <aside class="sidebar-details">
+          <h3 id="challenge-title">Desafio 1: Corrija o Par ou Ímpar</h3>
+          <p id="challenge-desc">
+            O código ao lado deveria ler um número inteiro e imprimir se ele é <strong>Par</strong> ou <strong>Ímpar</strong>. Entretanto, o código contém um erro no tipo de dado de entrada e no operador matemático.
+          </p>
+
+          <div class="info-group">
+            <label>Entrada de Teste:</label>
+            <div id="challenge-input" class="input-display">4</div>
+          </div>
+
+          <div class="info-group">
+            <label>Saída Esperada:</label>
+            <div id="challenge-expected" class="input-display highlight-green">Par</div>
+          </div>
+        </aside>
+
+        <!-- EDITOR BUG HUNT -->
+        <div class="main-editor-pane">
+          <div class="section-bar">Código com Bug</div>
+
+          <label for="challenge-python-code" class="sr-only" style="display:none;">Código do Desafio Bug Hunt</label>
+          <textarea
+            id="challenge-python-code"
+            class="code-editor"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          ># Corrija os erros neste código
+numero = input()
+
+if numero / 2 == 0:
+    print("Par")
+else:
+    print("Impar")</textarea>
+
+          <div class="section-bar">Saída do Terminal</div>
+          <div class="terminal-box">
+            <pre id="challenge-python-output" class="terminal-text muted">Aguardando execução...</pre>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- 3. STUDIO CSS -->
+    <section id="tab-studiocss" class="tab-content">
+
+      <div class="sub-header">
+        <div class="sub-header-left">
+          <div>
+            <h2>Studio CSS Component Builder</h2>
+            <span class="sub-description">Crie e teste componentes visuais</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="studio-workspace">
+
+        <!-- SIDEBAR CONTROLES CSS -->
+        <aside class="studio-sidebar">
+          <h3>Ajustes do Componente</h3>
+
+          <div class="control-group">
+            <label for="css-component-select">Componente:</label>
+            <select id="css-component-select" class="select-dropdown full-width" onchange="alterarComponenteCSS(this.value)">
+              <option value="botao">Botão</option>
+              <option value="card">Card</option>
+              <option value="input">Input</option>
+              <option value="badge">Badge</option>
+              <option value="navbar">Navbar</option>
+              <option value="alerta">Alerta</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="css-text-input">Texto do Componente:</label>
+            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" maxlength="100" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="color-row">
             <div class="control-group">
-                <label for="css-component-select">Escolha o Componente para Estilizar:</label>
-                <select id="css-component-select" onchange="alterarComponenteCSS(this.value)">
-                    <option value="botao">Botão Primário</option>
-                    <option value="card">Card de Perfil</option>
-                </select>
+              <label for="css-bg-color">Fundo:</label>
+              <input type="color" id="css-bg-color" value="#2563eb" oninput="atualizarPreviewCSS()">
             </div>
-            
-            <div class="studio-preview-area">
-                <div id="css-preview-element" class="btn-primario">Hover me!</div>
-            </div>
-        </section>
 
-        <!-- SEÇÃO 2: SANDBOX PYTHON (Lógica Isolada) -->
-        <section class="lab-section" id="sandbox">
-            <h2>⚙️ Sandbox Lógico</h2>
             <div class="control-group">
-                <label for="sandbox-language">Linguagem:</label>
-                <select id="sandbox-language" class="select-dropdown sandbox-select" disabled>
-                    <option value="python">Python 3.11</option>
-                </select>
+              <label for="css-text-color">Texto:</label>
+              <input type="color" id="css-text-color" value="#ffffff" oninput="atualizarPreviewCSS()">
             </div>
 
-            <div class="editor-group">
-                <label for="sandbox-code">Seu Código:</label>
-                <textarea id="sandbox-code" rows="6" placeholder="print('Olá, CodeQuest!')"></textarea>
+            <div class="control-group">
+              <label for="css-border-color">Borda:</label>
+              <input type="color" id="css-border-color" value="#3b82f6" oninput="atualizarPreviewCSS()">
             </div>
-            
-            <button class="btn-run" onclick="runSandbox()">▶ Executar Código</button>
-            
-            <div class="output-group">
-                <label for="sandbox-output">Terminal / Saída:</label>
-                <pre id="sandbox-output" class="terminal-text">Aguardando execução...</pre>
-            </div>
-        </section>
+          </div>
 
-        <!-- SEÇÃO 3: BUG HUNT -->
-        <section class="lab-section" id="bughunt">
-            <h2>🐛 Bug Hunt</h2>
-            <p>Encontre e corrija o erro no código abaixo para ganhar XP.</p>
-            
-            <div class="challenge-info">
-                <h3 id="challenge-title">Carregando desafio...</h3>
-                <p id="challenge-desc"></p>
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-font-size">Tamanho da Fonte (px):</label>
+              <span id="lbl-font-size" class="range-val">16px</span>
             </div>
+            <input type="range" id="css-font-size" min="12" max="32" value="16" oninput="atualizarPreviewCSS()">
+          </div>
 
-            <div class="editor-group">
-                <label for="challenge-python-code">Corrija o Código Aqui:</label>
-                <textarea id="challenge-python-code" rows="8"></textarea>
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-font-weight">Peso da Fonte:</label>
+              <span id="lbl-font-weight" class="range-val">600</span>
             </div>
-            
-            <button class="btn-run" onclick="submitChallenge()">✔ Submeter Correção</button>
-            
-            <div class="output-group">
-                <label for="challenge-python-output">Resultado da Avaliação:</label>
-                <pre id="challenge-python-output" class="terminal-text">Pronto para testar.</pre>
+            <input type="range" id="css-font-weight" min="300" max="900" step="100" value="600" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-padding-v">Padding Vertical (px):</label>
+              <span id="lbl-padding-v" class="range-val">12px</span>
             </div>
-        </section>
+            <input type="range" id="css-padding-v" min="4" max="40" value="12" oninput="atualizarPreviewCSS()">
+          </div>
 
-    </main>
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-padding-h">Padding Horizontal (px):</label>
+              <span id="lbl-padding-h" class="range-val">24px</span>
+            </div>
+            <input type="range" id="css-padding-h" min="8" max="60" value="24" oninput="atualizarPreviewCSS()">
+          </div>
 
-    <script src="static/main.js"></script>
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-radius">Border Radius (px):</label>
+              <span id="lbl-radius" class="range-val">8px</span>
+            </div>
+            <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-border-width">Espessura da Borda (px):</label>
+              <span id="lbl-border-width" class="range-val">2px</span>
+            </div>
+            <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label for="css-border-style">Estilo da Borda:</label>
+            <select id="css-border-style" class="select-dropdown full-width" onchange="atualizarPreviewCSS()">
+              <option value="solid">Sólida</option>
+              <option value="dashed">Tracejada</option>
+              <option value="dotted">Pontilhada</option>
+              <option value="none">Nenhuma</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="label-row">
+              <label for="css-shadow">Sombra (px):</label>
+              <span id="lbl-shadow" class="range-val">10px</span>
+            </div>
+            <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group checkbox-group">
+            <label for="css-include-hover">
+              <input type="checkbox" id="css-include-hover" checked onchange="atualizarPreviewCSS()">
+              Incluir efeito :hover
+            </label>
+          </div>
+
+        </aside>
+
+        <!-- ÁREA DE PREVIEW E CÓDIGO -->
+        <div class="studio-main">
+          <div id="css-preview-container" class="preview-box">
+            <!-- Componente renderizado via JS -->
+          </div>
+
+          <div class="code-export-box">
+            <div class="code-export-header">
+              <h3>Código CSS Gerado</h3>
+              <button class="btn btn-primary btn-sm" onclick="copiarCSS()">Copiar CSS</button>
+            </div>
+            <label for="generated-css-code" class="sr-only" style="display:none;">Código CSS Gerado</label>
+            <textarea id="generated-css-code" class="code-editor css-code" readonly spellcheck="false"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <div id="toast-notification" class="toast-container"></div>
+
+  <!-- BIBLIOTECAS E SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <script src="js/ui-utils.js"></script>
+  <script src="js/pyodide-engine.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/css-studio.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- SCRIPT DE VERIFICAÇÃO DO TOKEN (SSO & MODAL) -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenFromUrl = urlParams.get('token') || urlParams.get('user_id');
+
+      if (tokenFromUrl) {
+        localStorage.setItem('codequest_user_id', tokenFromUrl);
+        // Limpa parâmetros da URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      const userId = localStorage.getItem('codequest_user_id');
+      const guestBanner = document.getElementById('guest-banner');
+
+      if (!userId && guestBanner) {
+        guestBanner.style.display = 'flex';
+      }
+    });
+  </script>
+
 </body>
 </html>
