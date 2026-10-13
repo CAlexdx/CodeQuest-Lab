@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,44 +9,76 @@
   <link rel="icon" type="image/png" href="static/logo2.png">
   <link rel="stylesheet" href="css/style.css">
 
+  <!-- Script de Leitura Instantânea de Tema -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('codequest_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
   <style>
-    /* Banner do Modo Convidado (Alerta Superior) */
+    /* Estilização do Banner de Convidado */
     .guest-banner {
-      background: linear-gradient(135deg, #f97316, #ea580c);
-      color: #ffffff;
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(46, 16, 101, 0.95));
+      border-bottom: 1px solid #a855f7;
+      color: #f1f5f9;
       text-align: center;
-      padding: 10px 16px;
-      font-size: 14px;
+      padding: 10px 20px;
+      font-size: 13px;
       font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
     }
 
-    .guest-banner a {
-      background: #ffffff;
-      color: #ea580c;
-      padding: 4px 12px;
-      border-radius: 6px;
+    .guest-banner .btn-guest-login {
+      background: #7c3aed;
+      color: #ffffff !important;
+      padding: 5px 14px;
+      border-radius: 20px;
       text-decoration: none;
+      font-size: 12px;
       font-weight: 700;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
+      border: 1px solid #c084fc;
     }
 
-    .guest-banner a:hover {
-      background: #f1f5f9;
+    .guest-banner .btn-guest-login:hover {
+      background: #9333ea;
+      transform: scale(1.03);
+    }
+
+    /* Seletor de Tema no Topo */
+    .theme-toggle-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-card, #1e293b);
+      border: 1px solid var(--border, #334155);
+      padding: 4px 12px;
+      border-radius: 99px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 12px;
+      color: var(--text-primary, #f1f5f9);
+      transition: border-color 0.2s;
+    }
+
+    .theme-toggle-container:hover {
+      border-color: var(--accent, #38bdf8);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- BANNER MODO CONVIDADO (Exibido quando não há token/login) -->
+  <!-- BANNER MODO CONVIDADO -->
   <div id="guest-banner" class="guest-banner" style="display: none;">
-    <span>⚠️ You are in Guest Mode. Your progress and XP will not be saved.</span>
-    <a href="https://code-quest-bice.vercel.app/login?redirect=lab">Fazer Login no CodeQuest</a>
+    <span>⚠️ Você está no Modo Convidado. Seu progresso e XP não serão salvos no CodeQuest[cite: 16].</span>
+    <a href="https://code-quest-bice.vercel.app/login?redirect=lab" class="btn-guest-login">Entrar com CodeQuest</a>
   </div>
 
   <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
@@ -62,17 +94,28 @@
       <span class="tagline">Aprenda programação na prática</span>
     </div>
 
-    <nav class="nav-tabs" aria-label="Navegação Principal do LAB">
-      <button class="nav-btn active" onclick="trocarAba('tab-python', this)">
-        Sandbox
-      </button>
-      <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">
-        Desafios Bug Hunt
-      </button>
-      <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">
-        Studio CSS
-      </button>
-    </nav>
+    <!-- NAVEGAÇÃO DE ABAS & TOGGLE DE TEMA -->
+    <div style="display: flex; align-items: center; gap: 16px;">
+      
+      <label class="theme-toggle-container" for="theme-checkbox" title="Alternar Tema">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">Modo Escuro</span>
+        <input type="checkbox" id="theme-checkbox" style="display: none;" onchange="toggleTheme()">
+      </label>
+
+      <nav class="nav-tabs" aria-label="Navegação Principal do LAB">
+        <button class="nav-btn active" onclick="trocarAba('tab-python', this)">
+          Sandbox
+        </button>
+        <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">
+          Desafios Bug Hunt
+        </button>
+        <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">
+          Studio CSS
+        </button>
+      </nav>
+
+    </div>
 
   </header>
 
@@ -80,7 +123,7 @@
   <!-- ÁREA PRINCIPAL -->
   <main class="app-body">
 
-    <!-- 1. SANDBOX GERAL -->
+    <!-- 1. SANDBOX GERAL (FOCO EM LÓGICA / LINGUAGENS) -->
     <section id="tab-python" class="tab-content active">
 
       <div class="sub-header sandbox-header">
@@ -88,14 +131,15 @@
         <div class="sub-header-left sandbox-controls-left">
           <div>
             <h2>Sandbox de Código</h2>
-            <span class="sub-description">Teste códigos livremente no navegador</span>
+            <span class="sub-description">Teste algoritmos e estruturas de dados no navegador</span>
           </div>
 
           <div style="display: flex; gap: 10px; align-items: center;">
             <label for="sandbox-language" class="sr-only" style="display:none;">Linguagem do Sandbox</label>
             <select id="sandbox-language" class="select-dropdown sandbox-select" onchange="alterarModoSandbox(this.value)">
               <option value="python">Python 3.11</option>
-              <option value="web">Web — HTML + CSS + JavaScript</option>
+              <option value="sql">SQL / Banco de Dados</option>
+              <option value="javascript">JavaScript Lógico</option>
             </select>
 
             <label for="sandbox-example" class="sr-only" style="display:none;">Exemplo de Código</label>
@@ -114,8 +158,8 @@
 
       <div class="sandbox-workspace">
 
-        <!-- EDITOR PYTHON -->
-        <div class="sandbox-editor-pane">
+        <!-- EDITOR LÓGICO -->
+        <div class="sandbox-editor-pane" style="width: 100%;">
 
           <div class="section-bar">
             <span id="sandbox-editor-title">Editor Python</span>
@@ -137,7 +181,7 @@ nome = "CodeQuest"
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
 
-          <!-- TERMINAL PYTHON -->
+          <!-- TERMINAL DE SAÍDA -->
           <div id="sandbox-python-terminal" class="sandbox-output-section">
             <div class="section-bar">Terminal de Saída</div>
             <div class="terminal-box sandbox-terminal">
@@ -145,20 +189,6 @@ for i in range(3):
             </div>
           </div>
 
-        </div>
-
-        <!-- PREVIEW WEB -->
-        <div id="sandbox-web-preview-pane" class="sandbox-preview-pane hidden">
-          <div class="section-bar">Visualização do Código Web</div>
-          <div class="browser-preview">
-            <div class="browser-toolbar">
-              <span class="browser-dot"></span>
-              <span class="browser-dot"></span>
-              <span class="browser-dot"></span>
-              <span class="browser-address">sandbox.local</span>
-            </div>
-            <iframe id="sandbox-web-preview" title="Visualização do código Web" sandbox="allow-scripts"></iframe>
-          </div>
         </div>
 
       </div>
@@ -247,7 +277,7 @@ else:
         <div class="sub-header-left">
           <div>
             <h2>Studio CSS Component Builder</h2>
-            <span class="sub-description">Crie e teste componentes visuais</span>
+            <span class="sub-description">Crie e estilize componentes visuais interativos</span>
           </div>
         </div>
       </div>
@@ -399,15 +429,44 @@ else:
   <script src="js/css-studio.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- SCRIPT DE VERIFICAÇÃO DO TOKEN (SSO & MODAL) -->
+  <!-- LÓGICA DE GERENCIAMENTO DE TEMA E SESSÃO SSO -->
   <script>
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('codequest_theme', theme);
+      
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      const checkbox = document.getElementById('theme-checkbox');
+
+      if (theme === 'light') {
+        if (icon) icon.textContent = '☀️';
+        if (text) text.textContent = 'Modo Claro';
+        if (checkbox) checkbox.checked = true;
+      } else {
+        if (icon) icon.textContent = '🌙';
+        if (text) text.textContent = 'Modo Escuro';
+        if (checkbox) checkbox.checked = false;
+      }
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(newTheme);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+      // 1. Sincroniza Tema
+      const currentTheme = localStorage.getItem('codequest_theme') || 'dark';
+      applyTheme(currentTheme);
+
+      // 2. Valida SSO e Token de Usuário
       const urlParams = new URLSearchParams(window.location.search);
       const tokenFromUrl = urlParams.get('token') || urlParams.get('user_id');
 
       if (tokenFromUrl) {
         localStorage.setItem('codequest_user_id', tokenFromUrl);
-        // Limpa parâmetros da URL
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
@@ -416,6 +475,8 @@ else:
 
       if (!userId && guestBanner) {
         guestBanner.style.display = 'flex';
+      } else if (guestBanner) {
+        guestBanner.style.display = 'none';
       }
     });
   </script>
