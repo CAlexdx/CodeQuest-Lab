@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
   <title>CodeQuest LAB</title>
-
   <link rel="icon" type="image/png" href="static/logo2.png">
   <link rel="stylesheet" href="css/style.css">
 
@@ -18,7 +16,47 @@
   </script>
 
   <style>
-    /* Estilização do Banner de Convidado */
+    /* Notificação Estilo Minecraft no Topo */
+    .minecraft-toast {
+      position: fixed;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #1e1b4b, #31104d);
+      border: 2px solid #a855f7;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 99999;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-family: 'Segoe UI', sans-serif;
+      pointer-events: none;
+    }
+    .minecraft-toast.show {
+      top: 20px;
+    }
+    .minecraft-toast .toast-icon {
+      font-size: 24px;
+    }
+    .minecraft-toast .toast-text h4 {
+      margin: 0;
+      font-size: 13px;
+      color: #c084fc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .minecraft-toast .toast-text p {
+      margin: 2px 0 0 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    /* Banner Modo Convidado */
     .guest-banner {
       background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(46, 16, 101, 0.95));
       border-bottom: 1px solid #a855f7;
@@ -31,43 +69,35 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      backdrop-filter: blur(8px);
     }
-
-    .guest-banner .btn-guest-login {
+    .guest-banner a {
       background: #7c3aed;
-      color: #ffffff !important;
-      padding: 5px 14px;
+      color: #fff;
+      padding: 4px 12px;
       border-radius: 20px;
       text-decoration: none;
       font-size: 12px;
       font-weight: 700;
-      transition: background 0.2s, transform 0.1s;
-      border: 1px solid #c084fc;
     }
 
-    .guest-banner .btn-guest-login:hover {
-      background: #9333ea;
-      transform: scale(1.03);
-    }
-
-    /* Seletor de Tema no Topo */
-    .theme-toggle-container {
-      display: inline-flex;
+    /* Atalhos de Perfil e Sair na Top-Bar */
+    .user-lab-actions {
+      display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
+    }
+    .btn-lab-action {
       background: var(--bg-card, #1e293b);
       border: 1px solid var(--border, #334155);
-      padding: 4px 12px;
-      border-radius: 99px;
-      cursor: pointer;
-      user-select: none;
+      color: var(--text-primary);
+      padding: 6px 14px;
+      border-radius: 8px;
       font-size: 12px;
-      color: var(--text-primary, #f1f5f9);
+      font-weight: 600;
+      text-decoration: none;
       transition: border-color 0.2s;
     }
-
-    .theme-toggle-container:hover {
+    .btn-lab-action:hover {
       border-color: var(--accent, #38bdf8);
     }
   </style>
@@ -75,204 +105,157 @@
 
 <body>
 
+  <!-- TOAST DE CONQUISTA (MINECRAFT STYLE) -->
+  <div id="minecraft-toast" class="minecraft-toast">
+    <div class="toast-icon">🏆</div>
+    <div class="toast-text">
+      <h4>Conquista Desbloqueada!</h4>
+      <p id="toast-message-text">Primeiro Acesso ao CodeQuest LAB</p>
+    </div>
+  </div>
+
   <!-- BANNER MODO CONVIDADO -->
   <div id="guest-banner" class="guest-banner" style="display: none;">
-    <span>⚠️ Você está no Modo Convidado. Seu progresso e XP não serão salvos no CodeQuest[cite: 16].</span>
-    <a href="https://code-quest-bice.vercel.app/login?redirect=lab" class="btn-guest-login">Entrar com CodeQuest</a>
+    <span>⚠️ Você está no Modo Convidado. Seu progresso e XP não serão salvos.</span>
+    <a href="https://code-quest-bice.vercel.app/login?redirect=lab">Entrar com CodeQuest</a>
   </div>
 
   <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
   <header class="top-bar">
-
     <div class="top-bar-left">
       <div class="logo">
-        <img src="static/logo2.png" alt="CodeQuest LAB Logo" class="logo-img">
+        <img src="static/logo2.png" alt="Logo" class="logo-img">
         <h2>CodeQuest <span>LAB</span></h2>
       </div>
-
       <span class="divider">|</span>
-      <span class="tagline">Aprenda programação na prática</span>
+      <span class="tagline">Ambiente de Prática e Experimentos</span>
     </div>
 
-    <!-- NAVEGAÇÃO DE ABAS & TOGGLE DE TEMA -->
-    <div style="display: flex; align-items: center; gap: 16px;">
+    <!-- CONTROLES, TEMA, ABAS E PERFIL -->
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
       
-      <label class="theme-toggle-container" for="theme-checkbox" title="Alternar Tema">
+      <!-- Toggle de Tema -->
+      <label class="theme-toggle-container" for="theme-checkbox" title="Alternar Tema" style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); padding: 4px 12px; border-radius: 99px; cursor: pointer; font-size: 12px;">
         <span id="theme-icon">🌙</span>
-        <span id="theme-text">Modo Escuro</span>
+        <span id="theme-text">Tema</span>
         <input type="checkbox" id="theme-checkbox" style="display: none;" onchange="toggleTheme()">
       </label>
 
-      <nav class="nav-tabs" aria-label="Navegação Principal do LAB">
-        <button class="nav-btn active" onclick="trocarAba('tab-python', this)">
-          Sandbox
-        </button>
-        <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">
-          Desafios Bug Hunt
-        </button>
-        <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">
-          Studio CSS
-        </button>
+      <!-- Atalhos de Navegação Principal -->
+      <div class="user-lab-actions">
+        <a href="https://code-quest-bice.vercel.app/profile" class="btn-lab-action">👤 Perfil</a>
+        <a href="https://code-quest-bice.vercel.app/" class="btn-lab-action">🏠 Início</a>
+      </div>
+
+      <!-- Abas do Lab -->
+      <nav class="nav-tabs" aria-label="Navegação do LAB">
+        <button class="nav-btn active" onclick="trocarAba('tab-python', this)">Sandbox</button>
+        <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">Bug Hunt</button>
+        <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">Studio CSS</button>
       </nav>
 
     </div>
-
   </header>
-
 
   <!-- ÁREA PRINCIPAL -->
   <main class="app-body">
 
-    <!-- 1. SANDBOX GERAL (FOCO EM LÓGICA / LINGUAGENS) -->
+    <!-- 1. SANDBOX LÓGICO -->
     <section id="tab-python" class="tab-content active">
-
       <div class="sub-header sandbox-header">
-
         <div class="sub-header-left sandbox-controls-left">
           <div>
             <h2>Sandbox de Código</h2>
             <span class="sub-description">Teste algoritmos e estruturas de dados no navegador</span>
           </div>
-
           <div style="display: flex; gap: 10px; align-items: center;">
-            <label for="sandbox-language" class="sr-only" style="display:none;">Linguagem do Sandbox</label>
+            <label for="sandbox-language" class="sr-only" style="display:none;">Linguagem</label>
             <select id="sandbox-language" class="select-dropdown sandbox-select" onchange="alterarModoSandbox(this.value)">
               <option value="python">Python 3.11</option>
               <option value="sql">SQL / Banco de Dados</option>
               <option value="javascript">JavaScript Lógico</option>
             </select>
-
-            <label for="sandbox-example" class="sr-only" style="display:none;">Exemplo de Código</label>
-            <select id="sandbox-example" class="select-dropdown sandbox-select" onchange="carregarExemploSandbox(this.value)">
-              <!-- Preenchido via JS -->
-            </select>
+            <label for="sandbox-example" class="sr-only" style="display:none;">Exemplo</label>
+            <select id="sandbox-example" class="select-dropdown sandbox-select" onchange="carregarExemploSandbox(this.value)"></select>
           </div>
         </div>
-
         <div class="sub-header-right sandbox-actions">
           <button class="btn btn-success" onclick="executarSandbox()">Executar Código</button>
           <button class="btn btn-secondary" onclick="clearSandbox()">Limpar</button>
         </div>
-
       </div>
 
       <div class="sandbox-workspace">
-
-        <!-- EDITOR LÓGICO -->
         <div class="sandbox-editor-pane" style="width: 100%;">
-
           <div class="section-bar">
             <span id="sandbox-editor-title">Editor Python</span>
             <span id="sandbox-status" class="editor-status">Pronto</span>
           </div>
-
-          <label for="free-python-code" class="sr-only" style="display:none;">Editor de Código</label>
-          <textarea
-            id="free-python-code"
-            class="code-editor sandbox-code-editor"
-            spellcheck="false"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-          ># Escreva qualquer código Python aqui e clique em Executar
-
+          <label for="free-python-code" class="sr-only" style="display:none;">Código</label>
+          <textarea id="free-python-code" class="code-editor sandbox-code-editor" spellcheck="false"># Escreva seu código Python aqui
 nome = "CodeQuest"
-
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
-
-          <!-- TERMINAL DE SAÍDA -->
-          <div id="sandbox-python-terminal" class="sandbox-output-section">
+          <div class="sandbox-output-section">
             <div class="section-bar">Terminal de Saída</div>
             <div class="terminal-box sandbox-terminal">
               <pre id="free-python-output" class="terminal-text success">Aguardando execução...</pre>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </section>
-
 
     <!-- 2. BUG HUNT -->
     <section id="tab-bughunt" class="tab-content">
-
       <div class="sub-header">
-
         <div class="sub-header-left bughunt-header-left">
           <span id="challenge-badge" class="badge badge-blue">Nível Básico</span>
-
-          <label for="challenge-select" class="sr-only" style="display:none;">Selecione o Desafio</label>
+          <label for="challenge-select" class="sr-only" style="display:none;">Desafio</label>
           <select id="challenge-select" class="select-dropdown" onchange="carregarDesafio(this.value)">
             <option value="0">Desafio 1: Par ou Ímpar</option>
             <option value="1">Desafio 2: Cálculo de Fatorial</option>
             <option value="2">Desafio 3: Maior Número</option>
           </select>
         </div>
-
         <div class="sub-header-right">
           <button class="btn btn-success" onclick="runChallengePython()">Testar Código</button>
           <button class="btn btn-primary" onclick="submitChallenge()">Submeter Resposta</button>
         </div>
-
       </div>
 
       <div class="workspace-split">
-
-        <!-- SIDEBAR DE DETALHES -->
         <aside class="sidebar-details">
           <h3 id="challenge-title">Desafio 1: Corrija o Par ou Ímpar</h3>
-          <p id="challenge-desc">
-            O código ao lado deveria ler um número inteiro e imprimir se ele é <strong>Par</strong> ou <strong>Ímpar</strong>. Entretanto, o código contém um erro no tipo de dado de entrada e no operador matemático.
-          </p>
-
+          <p id="challenge-desc">O código ao lado deveria ler um número inteiro e imprimir se ele é Par ou Ímpar. Corrija o erro.</p>
           <div class="info-group">
             <label>Entrada de Teste:</label>
             <div id="challenge-input" class="input-display">4</div>
           </div>
-
           <div class="info-group">
             <label>Saída Esperada:</label>
             <div id="challenge-expected" class="input-display highlight-green">Par</div>
           </div>
         </aside>
 
-        <!-- EDITOR BUG HUNT -->
         <div class="main-editor-pane">
           <div class="section-bar">Código com Bug</div>
-
-          <label for="challenge-python-code" class="sr-only" style="display:none;">Código do Desafio Bug Hunt</label>
-          <textarea
-            id="challenge-python-code"
-            class="code-editor"
-            spellcheck="false"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-          ># Corrija os erros neste código
-numero = input()
-
+          <label for="challenge-python-code" class="sr-only" style="display:none;">Editor Bug Hunt</label>
+          <textarea id="challenge-python-code" class="code-editor" spellcheck="false">numero = input()
 if numero / 2 == 0:
     print("Par")
 else:
     print("Impar")</textarea>
-
           <div class="section-bar">Saída do Terminal</div>
           <div class="terminal-box">
             <pre id="challenge-python-output" class="terminal-text muted">Aguardando execução...</pre>
           </div>
         </div>
-
       </div>
-
     </section>
-
 
     <!-- 3. STUDIO CSS -->
     <section id="tab-studiocss" class="tab-content">
-
       <div class="sub-header">
         <div class="sub-header-left">
           <div>
@@ -281,13 +264,9 @@ else:
           </div>
         </div>
       </div>
-
       <div class="studio-workspace">
-
-        <!-- SIDEBAR CONTROLES CSS -->
         <aside class="studio-sidebar">
           <h3>Ajustes do Componente</h3>
-
           <div class="control-group">
             <label for="css-component-select">Componente:</label>
             <select id="css-component-select" class="select-dropdown full-width" onchange="alterarComponenteCSS(this.value)">
@@ -299,129 +278,28 @@ else:
               <option value="alerta">Alerta</option>
             </select>
           </div>
-
           <div class="control-group">
-            <label for="css-text-input">Texto do Componente:</label>
-            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" maxlength="100" oninput="atualizarPreviewCSS()">
+            <label for="css-text-input">Texto:</label>
+            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" oninput="atualizarPreviewCSS()">
           </div>
-
-          <div class="color-row">
-            <div class="control-group">
-              <label for="css-bg-color">Fundo:</label>
-              <input type="color" id="css-bg-color" value="#2563eb" oninput="atualizarPreviewCSS()">
-            </div>
-
-            <div class="control-group">
-              <label for="css-text-color">Texto:</label>
-              <input type="color" id="css-text-color" value="#ffffff" oninput="atualizarPreviewCSS()">
-            </div>
-
-            <div class="control-group">
-              <label for="css-border-color">Borda:</label>
-              <input type="color" id="css-border-color" value="#3b82f6" oninput="atualizarPreviewCSS()">
-            </div>
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-font-size">Tamanho da Fonte (px):</label>
-              <span id="lbl-font-size" class="range-val">16px</span>
-            </div>
-            <input type="range" id="css-font-size" min="12" max="32" value="16" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-font-weight">Peso da Fonte:</label>
-              <span id="lbl-font-weight" class="range-val">600</span>
-            </div>
-            <input type="range" id="css-font-weight" min="300" max="900" step="100" value="600" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-padding-v">Padding Vertical (px):</label>
-              <span id="lbl-padding-v" class="range-val">12px</span>
-            </div>
-            <input type="range" id="css-padding-v" min="4" max="40" value="12" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-padding-h">Padding Horizontal (px):</label>
-              <span id="lbl-padding-h" class="range-val">24px</span>
-            </div>
-            <input type="range" id="css-padding-h" min="8" max="60" value="24" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-radius">Border Radius (px):</label>
-              <span id="lbl-radius" class="range-val">8px</span>
-            </div>
-            <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-border-width">Espessura da Borda (px):</label>
-              <span id="lbl-border-width" class="range-val">2px</span>
-            </div>
-            <input type="range" id="css-border-width" min="0" max="10" value="2" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group">
-            <label for="css-border-style">Estilo da Borda:</label>
-            <select id="css-border-style" class="select-dropdown full-width" onchange="atualizarPreviewCSS()">
-              <option value="solid">Sólida</option>
-              <option value="dashed">Tracejada</option>
-              <option value="dotted">Pontilhada</option>
-              <option value="none">Nenhuma</option>
-            </select>
-          </div>
-
-          <div class="control-group">
-            <div class="label-row">
-              <label for="css-shadow">Sombra (px):</label>
-              <span id="lbl-shadow" class="range-val">10px</span>
-            </div>
-            <input type="range" id="css-shadow" min="0" max="30" value="10" oninput="atualizarPreviewCSS()">
-          </div>
-
-          <div class="control-group checkbox-group">
-            <label for="css-include-hover">
-              <input type="checkbox" id="css-include-hover" checked onchange="atualizarPreviewCSS()">
-              Incluir efeito :hover
-            </label>
-          </div>
-
         </aside>
-
-        <!-- ÁREA DE PREVIEW E CÓDIGO -->
         <div class="studio-main">
-          <div id="css-preview-container" class="preview-box">
-            <!-- Componente renderizado via JS -->
-          </div>
-
+          <div id="css-preview-container" class="preview-box"></div>
           <div class="code-export-box">
             <div class="code-export-header">
               <h3>Código CSS Gerado</h3>
               <button class="btn btn-primary btn-sm" onclick="copiarCSS()">Copiar CSS</button>
             </div>
-            <label for="generated-css-code" class="sr-only" style="display:none;">Código CSS Gerado</label>
+            <label for="generated-css-code" class="sr-only" style="display:none;">CSS</label>
             <textarea id="generated-css-code" class="code-editor css-code" readonly spellcheck="false"></textarea>
           </div>
         </div>
-
       </div>
-
     </section>
 
   </main>
 
-  <div id="toast-notification" class="toast-container"></div>
-
-  <!-- BIBLIOTECAS E SCRIPTS -->
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <script src="js/ui-utils.js"></script>
   <script src="js/pyodide-engine.js"></script>
@@ -429,57 +307,65 @@ else:
   <script src="js/css-studio.js"></script>
   <script src="js/main.js"></script>
 
-  <!-- LÓGICA DE GERENCIAMENTO DE TEMA E SESSÃO SSO -->
   <script>
+    function mostrarNotificacaoMinecraft(titulo, texto) {
+      const toast = document.getElementById('minecraft-toast');
+      const textElem = document.getElementById('toast-message-text');
+      if (!toast || !textElem) return;
+
+      textElem.textContent = texto;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('codequest_theme', theme);
-      
       const icon = document.getElementById('theme-icon');
-      const text = document.getElementById('theme-text');
-      const checkbox = document.getElementById('theme-checkbox');
-
-      if (theme === 'light') {
-        if (icon) icon.textContent = '☀️';
-        if (text) text.textContent = 'Modo Claro';
-        if (checkbox) checkbox.checked = true;
-      } else {
-        if (icon) icon.textContent = '🌙';
-        if (text) text.textContent = 'Modo Escuro';
-        if (checkbox) checkbox.checked = false;
-      }
+      if (icon) icon.textContent = theme === 'light' ? '☀️' : '🌙';
     }
 
     function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme);
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 1. Sincroniza Tema
-      const currentTheme = localStorage.getItem('codequest_theme') || 'dark';
-      applyTheme(currentTheme);
+      const savedTheme = localStorage.getItem('codequest_theme') || 'dark';
+      applyTheme(savedTheme);
 
-      // 2. Valida SSO e Token de Usuário
       const urlParams = new URLSearchParams(window.location.search);
-      const tokenFromUrl = urlParams.get('token') || urlParams.get('user_id');
+      const token = urlParams.get('token') || urlParams.get('user_id');
 
-      if (tokenFromUrl) {
-        localStorage.setItem('codequest_user_id', tokenFromUrl);
+      if (token) {
+        localStorage.setItem('codequest_user_id', token);
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
       const userId = localStorage.getItem('codequest_user_id');
-      const guestBanner = document.getElementById('guest-banner');
+      const banner = document.getElementById('guest-banner');
 
-      if (!userId && guestBanner) {
-        guestBanner.style.display = 'flex';
-      } else if (guestBanner) {
-        guestBanner.style.display = 'none';
+      if (!userId && banner) {
+        banner.style.display = 'flex';
+      } else {
+        if (banner) banner.style.display = 'none';
+        // Dispara conquista de primeiro acesso ao Lab se logado
+        if (!localStorage.getItem('lab_visited')) {
+          localStorage.setItem('lab_visited', 'true');
+          setTimeout(() => mostrarNotificacaoMinecraft('Conquista!', '🚀 Explorador do LAB'), 1000);
+        }
       }
     });
-  </script>
 
+    function trocarAba(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>

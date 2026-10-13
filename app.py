@@ -2,18 +2,11 @@ import os
 from flask import Flask, request, jsonify, render_template
 from supabase import create_client, Client
 
-# Configuração do Flask apontando para a pasta atual
 app = Flask(__name__, static_folder="static", template_folder=".")
 
-# Configuração do Supabase (Oculte suas chaves usando Variáveis de Ambiente)
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "SUA_URL_DO_SUPABASE_AQUI")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "SUA_CHAVE_DO_SUPABASE_AQUI")
-
-# Inicializa o cliente do Supabase apenas se as chaves estiverem presentes
-if SUPABASE_URL != "SUA_URL_DO_SUPABASE_AQUI":
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-else:
-    supabase = None
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
 
 @app.route("/")
 def index():
@@ -30,15 +23,13 @@ def submit_bughunt():
     challenge_id = data.get("challenge_id")
     passed = data.get("passed")
 
-    # Modo Convidado: Usuário não está logado
     if not user_id:
         return jsonify({
             "success": True, 
             "guest_mode": True, 
-            "message": "Código correto! Faça login no CodeQuest para salvar seu progresso e ganhar XP."
+            "message": "Código correto! Faça login no CodeQuest para salvar seu progresso e XP."
         })
 
-    # Modo Aluno Logado: Tenta salvar no Supabase
     try:
         if supabase:
             supabase.table("lab_submissions").insert({
@@ -51,7 +42,8 @@ def submit_bughunt():
         return jsonify({
             "success": True, 
             "guest_mode": False, 
-            "message": "Desafio concluído! Seu progresso e XP foram salvos."
+            "badge_earned": "🐛 Mestre dos Bugs",
+            "message": "Desafio concluído com sucesso! XP salvo e Conquista desbloqueada."
         })
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
