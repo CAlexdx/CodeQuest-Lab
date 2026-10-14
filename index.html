@@ -6,7 +6,7 @@
   <title>CodeQuest LAB</title>
   <link rel="icon" type="image/png" href="static/logo2.png">
 
-  <!-- Script de Leitura Instantânea de Tema (Suporta ?theme=dark|light e localStorage) -->
+  <!-- Script de Leitura Instantânea de Tema -->
   <script>
     (function () {
       var theme = 'dark';
@@ -24,7 +24,40 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* Notificação Estilo Minecraft no Topo */
+    /* Ajustes para ocupar 100% de largura no Sandbox quando não há preview */
+    .sandbox-workspace {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+    }
+    .sandbox-full-width {
+      width: 100% !important;
+    }
+    
+    /* Studio CSS Controles Ricos */
+    .studio-sidebar .control-group {
+      margin-bottom: 14px;
+    }
+    .studio-sidebar label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-secondary, #94a3b8);
+    }
+    .studio-sidebar input[type="color"] {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: none;
+      cursor: pointer;
+    }
+    .studio-sidebar input[type="range"] {
+      width: 100%;
+    }
+
+    /* Notificação Estilo Minecraft */
     .minecraft-toast {
       position: fixed;
       top: -80px;
@@ -41,173 +74,85 @@
       gap: 12px;
       z-index: 99999;
       transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      font-family: 'Segoe UI', sans-serif;
       pointer-events: none;
     }
-    .minecraft-toast.show {
-      top: 20px;
-    }
-    .minecraft-toast .toast-icon {
-      font-size: 24px;
-    }
-    .minecraft-toast .toast-text h4 {
-      margin: 0;
-      font-size: 13px;
-      color: #c084fc;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .minecraft-toast .toast-text p {
-      margin: 2px 0 0 0;
-      font-size: 14px;
-      font-weight: 700;
-      color: #f8fafc;
-    }
-
-    /* Banner Modo Convidado */
-    .guest-banner {
-      background: linear-gradient(135deg, rgba(30, 27, 75, 0.95), rgba(46, 16, 101, 0.95));
-      border-bottom: 1px solid #a855f7;
-      color: #f1f5f9;
-      text-align: center;
-      padding: 10px 20px;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-    .guest-banner a {
-      background: #7c3aed;
-      color: #fff;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    /* Atalhos de Perfil e Sair na Top-Bar */
-    .user-lab-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .btn-lab-action {
-      background: var(--bg-card, #1e293b);
-      border: 1px solid var(--border, #334155);
-      color: var(--text-primary);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: border-color 0.2s;
-    }
-    .btn-lab-action:hover {
-      border-color: var(--accent, #38bdf8);
-    }
+    .minecraft-toast.show { top: 20px; }
   </style>
 </head>
 
 <body>
 
-  <!-- TOAST DE CONQUISTA (MINECRAFT STYLE) -->
+  <!-- TOAST DE CONQUISTA -->
   <div id="minecraft-toast" class="minecraft-toast">
-    <div class="toast-icon">🏆</div>
-    <div class="toast-text">
-      <h4>Conquista Desbloqueada!</h4>
-      <p id="toast-message-text">Primeiro Acesso ao CodeQuest LAB</p>
+    <div style="font-size: 24px;">🏆</div>
+    <div>
+      <h4 style="margin:0; font-size:12px; color:#c084fc;">Conquista Desbloqueada!</h4>
+      <p id="toast-message-text" style="margin:2px 0 0 0; font-weight:700;">Explorador do LAB</p>
     </div>
   </div>
 
   <!-- BANNER MODO CONVIDADO -->
-  <div id="guest-banner" class="guest-banner" style="display: none;">
+  <div id="guest-banner" class="guest-banner" style="display: none; background: #1e1b4b; text-align: center; padding: 8px; font-size: 12px; border-bottom: 1px solid #a855f7;">
     <span>⚠️ Você está no Modo Convidado. Seu progresso e XP não serão salvos.</span>
-    <a href="https://code-quest-bice.vercel.app/login?redirect=lab">Entrar com CodeQuest</a>
+    <a href="https://code-quest-bice.vercel.app/login?redirect=lab" style="color: #c084fc; margin-left: 10px; font-weight: bold;">Entrar</a>
   </div>
 
   <!-- BARRA SUPERIOR DE NAVEGAÇÃO -->
   <header class="top-bar">
     <div class="top-bar-left">
-      <div class="logo">
-        <img src="static/logo2.png" alt="Logo" class="logo-img">
-        <h2>CodeQuest <span>LAB</span></h2>
-      </div>
-      <span class="divider">|</span>
-      <span class="tagline">Ambiente de Prática e Experimentos</span>
+      <h2>CodeQuest <span>LAB</span></h2>
+      <span class="tagline" style="font-size: 12px; opacity: 0.7;">| Ambiente de Prática</span>
     </div>
 
-    <!-- CONTROLES, TEMA, ABAS E PERFIL -->
-    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-      
-      <!-- Toggle de Tema -->
-      <label class="theme-toggle-container" for="theme-checkbox" title="Alternar Tema" style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-card); border: 1px solid var(--border); padding: 4px 12px; border-radius: 99px; cursor: pointer; font-size: 12px;">
-        <span id="theme-icon">🌙</span>
-        <span id="theme-text">Tema</span>
-        <input type="checkbox" id="theme-checkbox" style="display: none;" onchange="toggleTheme()">
-      </label>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button class="btn btn-secondary btn-sm" onclick="toggleTheme()">🌓 Tema</button>
+      <a href="https://code-quest-bice.vercel.app/profile" class="btn btn-secondary btn-sm">👤 Perfil</a>
+      <a href="https://code-quest-bice.vercel.app/" class="btn btn-secondary btn-sm">🏠 Início</a>
 
-      <!-- Atalhos de Navegação Principal -->
-      <div class="user-lab-actions">
-        <a href="https://code-quest-bice.vercel.app/profile" class="btn-lab-action">👤 Perfil</a>
-        <a href="https://code-quest-bice.vercel.app/" class="btn-lab-action">🏠 Início</a>
-      </div>
-
-      <!-- Abas do Lab -->
-      <nav class="nav-tabs" aria-label="Navegação do LAB">
+      <nav class="nav-tabs">
         <button class="nav-btn active" onclick="trocarAba('tab-python', this)">Sandbox</button>
         <button class="nav-btn" onclick="trocarAba('tab-bughunt', this)">Bug Hunt</button>
         <button class="nav-btn" onclick="trocarAba('tab-studiocss', this)">Studio CSS</button>
+        <button class="nav-btn" onclick="trocarAba('tab-htmllivre', this)">Visual HTML Livre</button>
       </nav>
-
     </div>
   </header>
 
   <!-- ÁREA PRINCIPAL -->
-  <main class="app-body">
+  <main class="app-body" style="padding: 20px;">
 
     <!-- 1. SANDBOX LÓGICO -->
     <section id="tab-python" class="tab-content active">
-      <div class="sub-header sandbox-header">
-        <div class="sub-header-left sandbox-controls-left">
-          <div>
-            <h2>Sandbox de Código</h2>
-            <span class="sub-description">Teste algoritmos e estruturas de dados no navegador</span>
-          </div>
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <label for="sandbox-language" class="sr-only" style="display:none;">Linguagem</label>
-            <select id="sandbox-language" class="select-dropdown sandbox-select" onchange="alterarModoSandbox(this.value)">
-              <option value="python">Python 3.11</option>
-              <option value="sql">SQL / Banco de Dados</option>
-              <option value="javascript">JavaScript Lógico</option>
-            </select>
-            <label for="sandbox-example" class="sr-only" style="display:none;">Exemplo</label>
-            <select id="sandbox-example" class="select-dropdown sandbox-select" onchange="carregarExemploSandbox(this.value)"></select>
-          </div>
+      <div class="sub-header" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <h2>Sandbox de Código</h2>
+          <select id="sandbox-language" class="select-dropdown" onchange="alterarModoSandbox(this.value)">
+            <option value="python">Python 3.11</option>
+            <option value="sql">SQL / Banco de Dados</option>
+            <option value="javascript">JavaScript Lógico</option>
+          </select>
         </div>
-        <div class="sub-header-right sandbox-actions">
+        <div>
           <button class="btn btn-success" onclick="executarSandbox()">Executar Código</button>
           <button class="btn btn-secondary" onclick="clearSandbox()">Limpar</button>
         </div>
       </div>
 
       <div class="sandbox-workspace">
-        <div class="sandbox-editor-pane" style="width: 100%;">
-          <div class="section-bar">
-            <span id="sandbox-editor-title">Editor Python</span>
-            <span id="sandbox-status" class="editor-status">Pronto</span>
+        <div class="sandbox-editor-pane sandbox-full-width">
+          <div class="section-bar" style="display: flex; justify-content: space-between; background: var(--bg-card); padding: 8px 12px;">
+            <span id="sandbox-editor-title">Editor Python 3.11</span>
+            <span id="sandbox-status">Pronto</span>
           </div>
-          <label for="free-python-code" class="sr-only" style="display:none;">Código</label>
-          <textarea id="free-python-code" class="code-editor sandbox-code-editor" spellcheck="false"># Escreva seu código Python aqui
+          <textarea id="free-python-code" class="code-editor" style="width: 100%; height: 280px; font-family: monospace; padding: 10px; background: #0f172a; color: #f8fafc;" spellcheck="false"># Escreva seu código Python aqui
 nome = "CodeQuest"
 for i in range(3):
     print(f"Bem-vindo ao {nome}!")</textarea>
-          <div class="sandbox-output-section">
-            <div class="section-bar">Terminal de Saída</div>
-            <div class="terminal-box sandbox-terminal">
-              <pre id="free-python-output" class="terminal-text success">Aguardando execução...</pre>
+          
+          <div class="sandbox-output-section" style="margin-top: 15px;">
+            <div class="section-bar" style="background: var(--bg-card); padding: 6px 12px;">Terminal de Saída</div>
+            <div class="terminal-box" style="background: #020617; padding: 15px; border-radius: 8px; min-height: 100px;">
+              <pre id="free-python-output" style="color: #4ade80; margin: 0;">Aguardando execução...</pre>
             </div>
           </div>
         </div>
@@ -215,92 +160,142 @@ for i in range(3):
     </section>
 
     <!-- 2. BUG HUNT -->
-    <section id="tab-bughunt" class="tab-content">
-      <div class="sub-header">
-        <div class="sub-header-left bughunt-header-left">
-          <span id="challenge-badge" class="badge badge-blue">Nível Básico</span>
-          <label for="challenge-select" class="sr-only" style="display:none;">Desafio</label>
+    <section id="tab-bughunt" class="tab-content" style="display:none;">
+      <div class="sub-header" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="badge badge-blue">Nível Básico</span>
           <select id="challenge-select" class="select-dropdown" onchange="carregarDesafio(this.value)">
             <option value="0">Desafio 1: Par ou Ímpar</option>
             <option value="1">Desafio 2: Cálculo de Fatorial</option>
             <option value="2">Desafio 3: Maior Número</option>
           </select>
         </div>
-        <div class="sub-header-right">
+        <div>
           <button class="btn btn-success" onclick="runChallengePython()">Testar Código</button>
           <button class="btn btn-primary" onclick="submitChallenge()">Submeter Resposta</button>
         </div>
       </div>
 
-      <div class="workspace-split">
-        <aside class="sidebar-details">
+      <div class="workspace-split" style="display: flex; gap: 20px;">
+        <aside style="width: 300px; background: var(--bg-card); padding: 15px; border-radius: 8px;">
           <h3 id="challenge-title">Desafio 1: Corrija o Par ou Ímpar</h3>
-          <p id="challenge-desc">O código ao lado deveria ler um número inteiro e imprimir se ele é Par ou Ímpar. Corrija o erro.</p>
-          <div class="info-group">
+          <p id="challenge-desc" style="font-size: 13px;">Corrija a verificação de paridade no código.</p>
+          <div>
             <label>Entrada de Teste:</label>
-            <div id="challenge-input" class="input-display">4</div>
+            <div id="challenge-input" style="background: #0f172a; padding: 6px; border-radius: 4px;">4</div>
           </div>
-          <div class="info-group">
+          <div style="margin-top: 10px;">
             <label>Saída Esperada:</label>
-            <div id="challenge-expected" class="input-display highlight-green">Par</div>
+            <div id="challenge-expected" style="background: #0f172a; padding: 6px; border-radius: 4px; color: #4ade80;">Par</div>
           </div>
         </aside>
 
-        <div class="main-editor-pane">
+        <div style="flex: 1;">
           <div class="section-bar">Código com Bug</div>
-          <label for="challenge-python-code" class="sr-only" style="display:none;">Editor Bug Hunt</label>
-          <textarea id="challenge-python-code" class="code-editor" spellcheck="false">numero = input()
+          <textarea id="challenge-python-code" class="code-editor" style="width: 100%; height: 200px; background: #0f172a; color: #f8fafc;" spellcheck="false">numero = input()
 if numero / 2 == 0:
     print("Par")
 else:
     print("Impar")</textarea>
-          <div class="section-bar">Saída do Terminal</div>
-          <div class="terminal-box">
-            <pre id="challenge-python-output" class="terminal-text muted">Aguardando execução...</pre>
+          <div class="section-bar" style="margin-top: 10px;">Saída do Terminal</div>
+          <div class="terminal-box" style="background: #020617; padding: 10px; min-height: 80px;">
+            <pre id="challenge-python-output" style="color: #94a3b8; margin: 0;">Aguardando execução...</pre>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. STUDIO CSS -->
-    <section id="tab-studiocss" class="tab-content">
-      <div class="sub-header">
-        <div class="sub-header-left">
-          <div>
-            <h2>Studio CSS Component Builder</h2>
-            <span class="sub-description">Crie e estilize componentes visuais interativos</span>
-          </div>
-        </div>
-      </div>
-      <div class="studio-workspace">
-        <aside class="studio-sidebar">
-          <h3>Ajustes do Componente</h3>
+    <!-- 3. STUDIO CSS COMPONENTE -->
+    <section id="tab-studiocss" class="tab-content" style="display:none;">
+      <h2>Studio CSS Component Builder</h2>
+      <p style="font-size: 13px; opacity: 0.8;">Ajuste as propriedades visuais no painel esquerdo para gerar o CSS ao vivo</p>
+
+      <div style="display: flex; gap: 20px; margin-top: 15px;">
+        <!-- CONTROLES ESQUERDA -->
+        <aside class="studio-sidebar" style="width: 320px; background: var(--bg-card); padding: 15px; border-radius: 8px;">
+          <h3>Controles de Estilo</h3>
+          
           <div class="control-group">
-            <label for="css-component-select">Componente:</label>
-            <select id="css-component-select" class="select-dropdown full-width" onchange="alterarComponenteCSS(this.value)">
+            <label>Componente:</label>
+            <select id="css-component-select" class="select-dropdown" style="width:100%;" onchange="alterarComponenteCSS(this.value)">
               <option value="botao">Botão</option>
               <option value="card">Card</option>
-              <option value="input">Input</option>
+              <option value="input">Campo de Texto</option>
               <option value="badge">Badge</option>
-              <option value="navbar">Navbar</option>
+              <option value="navbar">Barra de Navegação</option>
               <option value="alerta">Alerta</option>
             </select>
           </div>
+
           <div class="control-group">
-            <label for="css-text-input">Texto:</label>
-            <input type="text" id="css-text-input" class="input-text" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+            <label>Texto do Elemento:</label>
+            <input type="text" id="css-text-input" style="width:100%; padding:6px; background:#0f172a; color:#fff; border:1px solid var(--border);" value="Clique Aqui" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Cor de Fundo (Background):</label>
+            <input type="color" id="css-bg-color" value="#2563eb" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Cor do Texto:</label>
+            <input type="color" id="css-text-color" value="#ffffff" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Cor da Borda:</label>
+            <input type="color" id="css-border-color" value="#3b82f6" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Tamanho da Fonte: <span id="lbl-font-size">16px</span></label>
+            <input type="range" id="css-font-size" min="10" max="32" value="16" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Arredondamento (Radius): <span id="lbl-radius">8px</span></label>
+            <input type="range" id="css-radius" min="0" max="50" value="8" oninput="atualizarPreviewCSS()">
+          </div>
+
+          <div class="control-group">
+            <label>Sombra (Box Shadow): <span id="lbl-shadow">10px</span></label>
+            <input type="range" id="css-shadow" min="0" max="40" value="10" oninput="atualizarPreviewCSS()">
           </div>
         </aside>
-        <div class="studio-main">
-          <div id="css-preview-container" class="preview-box"></div>
-          <div class="code-export-box">
-            <div class="code-export-header">
-              <h3>Código CSS Gerado</h3>
+
+        <!-- PREVIEW E CÓDIGO DIREITA -->
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+          <div id="css-preview-container" style="background: #020617; border: 2px dashed #334155; padding: 40px; border-radius: 8px; min-height: 180px; display: flex; align-items: center; justify-content: center;"></div>
+
+          <div style="background: var(--bg-card); padding: 15px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <h3 style="margin:0;">Código CSS Gerado</h3>
               <button class="btn btn-primary btn-sm" onclick="copiarCSS()">Copiar CSS</button>
             </div>
-            <label for="generated-css-code" class="sr-only" style="display:none;">CSS</label>
-            <textarea id="generated-css-code" class="code-editor css-code" readonly spellcheck="false"></textarea>
+            <textarea id="generated-css-code" style="width: 100%; height: 120px; background: #0f172a; color: #38bdf8; font-family: monospace; padding: 10px;" readonly></textarea>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. VISUAL HTML LIVRE -->
+    <section id="tab-htmllivre" class="tab-content" style="display:none;">
+      <h2>Visual HTML & CSS Livre</h2>
+      <p style="font-size: 13px; opacity: 0.8;">Escreva HTML e CSS livremente e veja o resultado sendo renderizado ao vivo</p>
+
+      <div style="display: flex; gap: 20px; margin-top: 15px;">
+        <div style="flex: 1;">
+          <div class="section-bar">Editor HTML / CSS</div>
+          <textarea id="free-html-code" style="width: 100%; height: 350px; background: #0f172a; color: #f8fafc; font-family: monospace; padding: 10px;" spellcheck="false" oninput="renderizarHTMLLivre()"><div style="padding: 20px; text-align: center; background: #1e293b; color: #38bdf8; border-radius: 12px;">
+  <h2>Olá, CodeQuest LAB!</h2>
+  <p>Este é o preview ao vivo da sua estrutura HTML.</p>
+  <button style="padding: 10px 20px; background: #38bdf8; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Testar Botão</button>
+</div></textarea>
+        </div>
+
+        <div style="flex: 1;">
+          <div class="section-bar">Resultado do Preview ao Vivo</div>
+          <iframe id="live-html-preview" style="width: 100%; height: 350px; background: #ffffff; border: 1px solid var(--border); border-radius: 8px;"></iframe>
         </div>
       </div>
     </section>
@@ -311,54 +306,33 @@ else:
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <script src="js/ui-utils.js"></script>
   <script src="js/pyodide-engine.js"></script>
-  <script src="js/app.js"></script>
   <script src="js/css-studio.js"></script>
-  <script src="js/main.js"></script>
-  
-  <!-- Scripts de Conquistas e Ponte de Identidade com o CodeQuest Principal -->
   <script src="js/achievements.js" defer></script>
   <script src="js/lab-bridge.js" defer data-main-origin="https://code-quest-bice.vercel.app"></script>
 
   <script>
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('codequest_theme', theme);
-      const icon = document.getElementById('theme-icon');
-      if (icon) icon.textContent = theme === 'light' ? '☀️' : '🌙';
-    }
-
     function toggleTheme() {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('codequest_theme', next);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem('codequest_theme') || 'dark';
-      applyTheme(savedTheme);
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token') || urlParams.get('user_id');
-
-      if (token) {
-        localStorage.setItem('codequest_user_id', token);
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-
-      const userId = localStorage.getItem('codequest_user_id');
-      const banner = document.getElementById('guest-banner');
-
-      if (!userId && banner) {
-        banner.style.display = 'flex';
-      } else {
-        if (banner) banner.style.display = 'none';
-      }
-    });
-
     function trocarAba(tabId, btn) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
+      document.getElementById(tabId).style.display = 'block';
       btn.classList.add('active');
+      if (tabId === 'tab-studiocss') alterarComponenteCSS('botao');
+      if (tabId === 'tab-htmllivre') renderizarHTMLLivre();
+    }
+
+    function renderizarHTMLLivre() {
+      const code = document.getElementById('free-html-code').value;
+      const iframe = document.getElementById('live-html-preview');
+      if (iframe) {
+        iframe.srcdoc = code;
+      }
     }
   </script>
 </body>
