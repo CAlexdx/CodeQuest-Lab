@@ -5,7 +5,7 @@ __pycache__/
 venv/
 .venv/
 env/
-
+.env.example
 # Banco de dados local (nunca subir o .db)
 *.db
 *.sqlite3

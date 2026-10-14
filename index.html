@@ -5,15 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>CodeQuest LAB</title>
   <link rel="icon" type="image/png" href="static/logo2.png">
-  <link rel="stylesheet" href="css/style.css">
 
-  <!-- Script de Leitura Instantânea de Tema -->
+  <!-- Script de Leitura Instantânea de Tema (Suporta ?theme=dark|light e localStorage) -->
   <script>
-    (function() {
-      const savedTheme = localStorage.getItem('codequest_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+    (function () {
+      var theme = 'dark';
+      try {
+        var fromUrl = new URLSearchParams(location.search).get('theme');
+        var saved = localStorage.getItem('codequest_theme');
+        if (fromUrl === 'light' || fromUrl === 'dark') theme = fromUrl;
+        else if (saved === 'light' || saved === 'dark') theme = saved;
+        localStorage.setItem('codequest_theme', theme);
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
+
+  <link rel="stylesheet" href="css/style.css">
 
   <style>
     /* Notificação Estilo Minecraft no Topo */
@@ -306,21 +314,12 @@ else:
   <script src="js/app.js"></script>
   <script src="js/css-studio.js"></script>
   <script src="js/main.js"></script>
+  
+  <!-- Scripts de Conquistas e Ponte de Identidade com o CodeQuest Principal -->
+  <script src="js/achievements.js" defer></script>
+  <script src="js/lab-bridge.js" defer data-main-origin="https://code-quest-bice.vercel.app"></script>
 
   <script>
-    function mostrarNotificacaoMinecraft(titulo, texto) {
-      const toast = document.getElementById('minecraft-toast');
-      const textElem = document.getElementById('toast-message-text');
-      if (!toast || !textElem) return;
-
-      textElem.textContent = texto;
-      toast.classList.add('show');
-
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3500);
-    }
-
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('codequest_theme', theme);
@@ -352,11 +351,6 @@ else:
         banner.style.display = 'flex';
       } else {
         if (banner) banner.style.display = 'none';
-        // Dispara conquista de primeiro acesso ao Lab se logado
-        if (!localStorage.getItem('lab_visited')) {
-          localStorage.setItem('lab_visited', 'true');
-          setTimeout(() => mostrarNotificacaoMinecraft('Conquista!', '🚀 Explorador do LAB'), 1000);
-        }
       }
     });
 
