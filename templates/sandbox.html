@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Sandbox - CodeQuest LAB{% endblock %}
+{% block content %}
+  <div class="page-head">
+    <h1>Sandbox de Código</h1>
+    <p>Teste algoritmos, consultas SQL e lógica em JavaScript no próprio navegador.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="field">
+      <label for="sandbox-language">Linguagem</label>
+      <select id="sandbox-language" class="select">
+        <option value="python">Python 3.11</option>
+        <option value="javascript">JavaScript</option>
+        <option value="sql">SQL (SQLite)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="sandbox-example">Exemplo</label>
+      <select id="sandbox-example" class="select"></select>
+    </div>
+    <div class="actions">
+      <button type="button" id="btn-run" class="btn btn-success">▶ Executar</button>
+      <button type="button" id="btn-stop" class="btn btn-danger" hidden>■ Parar</button>
+      <button type="button" id="btn-clear" class="btn btn-secondary">Limpar</button>
+    </div>
+  </div>
+
+  <div class="editor-wrap">
+    <div class="editor-bar"><span id="editor-title">Editor Python 3.11</span><span id="status" class="status">Carregando...</span></div>
+    <label for="code" class="sr-only">Código</label>
+    <textarea id="code" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+    <div class="quickkeys" id="quickkeys" aria-label="Teclas rápidas"></div>
+    <div id="stdin-wrap" style="padding:10px 12px;border-top:1px solid var(--border)" hidden>
+      <label for="stdin" class="label">Entradas para input() — uma por linha</label>
+      <textarea id="stdin" class="input" rows="2" style="margin-top:4px;font-family:Consolas,Menlo,monospace" spellcheck="false" placeholder="Ex.: 7"></textarea>
+    </div>
+  </div>
+
+  <div class="terminal">
+    <div class="editor-bar"><span>Terminal de saída</span></div>
+    <pre id="out-text" class="muted">Aguardando execução...</pre>
+    <div id="out-sql" class="out" hidden></div>
+  </div>
+
+  <p id="sql-help" style="font-size:12px;margin-top:10px" hidden>
+    Banco de teste com as tabelas <code>users</code>, <code>trails</code>, <code>units</code> e <code>unit_progress</code>.
+    Ele é recriado a cada execução; por isso, se quiser fazer <code>INSERT</code> e depois <code>SELECT</code>, escreva tudo no mesmo código.
+  </p>
+{% endblock %}
+{% block scripts %}
+  <script src="/static/js/engines.js?v={{ asset_v }}" defer></script>
+  <script src="/static/js/sandbox.js?v={{ asset_v }}" defer></script>
+{% endblock %}

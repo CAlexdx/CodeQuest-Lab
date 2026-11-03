@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{% block title %}CodeQuest LAB{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🧪%3C/text%3E%3C/svg%3E">
+
+  <!-- Tema antes de pintar a página (evita "flash"): aceita ?theme=dark|light vindo do CodeQuest -->
+  <script>
+    (function () {
+      var theme = 'dark';
+      try {
+        var fromUrl = new URLSearchParams(location.search).get('theme');
+        var saved = localStorage.getItem('codequest_theme');
+        if (fromUrl === 'light' || fromUrl === 'dark') theme = fromUrl;
+        else if (saved === 'light' || saved === 'dark') theme = saved;
+        localStorage.setItem('codequest_theme', theme);
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ asset_v }}">
+  <script>
+    window.CQ_CONFIG = {{ {'mainUrl': main_url, 'pyodideBase': pyodide_base, 'sqljsBase': sqljs_base, 'labTo': lab_to, 'bughuntTotal': bughunt_total}|tojson }};
+  </script>
+</head>
+<body data-page="{{ page }}">
+
+  <!-- Aviso de sessão (aparece só quando necessário: convidado ou sessão expirada) -->
+  <div id="session-banner" class="banner" role="status" hidden>
+    <span id="session-banner-text"></span>
+    <a id="session-banner-link" class="btn" href="{{ main_url }}/lab">Entrar com CodeQuest</a>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Início do CodeQuest LAB">
+      <span class="logo-mark" aria-hidden="true">🧪</span>
+      <h2 style="font-size:inherit;margin:0">CodeQuest <span>LAB</span></h2>
+    </a>
+    <span class="tagline">Ambiente de prática e experimentos</span>
+
+    <nav class="nav-tabs" aria-label="Navegação do LAB">
+      <a href="/sandbox"{% if page == 'sandbox' %} class="active" aria-current="page"{% endif %}>Sandbox</a>
+      <a href="/bug-hunt"{% if page == 'bughunt' %} class="active" aria-current="page"{% endif %}>Bug Hunt</a>
+      <a href="/studio-css"{% if page == 'studio' %} class="active" aria-current="page"{% endif %}>Studio CSS</a>
+    </nav>
+
+    <span id="user-chip" class="user-chip" hidden></span>
+
+    <div class="top-links">
+      <button type="button" id="theme-btn" class="icon-btn" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+        <span id="theme-icon" aria-hidden="true">🌙</span>
+      </button>
+      <a class="icon-btn" id="back-main" href="{{ main_url }}/" title="Voltar ao CodeQuest">⬅ <span class="back-text">CodeQuest</span></a>
+    </div>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegação do LAB (celular)">
+    <a href="/"{% if page == 'home' %} class="active" aria-current="page"{% endif %}><span class="ico">🏠</span>Início</a>
+    <a href="/sandbox"{% if page == 'sandbox' %} class="active" aria-current="page"{% endif %}><span class="ico">💻</span>Sandbox</a>
+    <a href="/bug-hunt"{% if page == 'bughunt' %} class="active" aria-current="page"{% endif %}><span class="ico">🐛</span>Bug Hunt</a>
+    <a href="/studio-css"{% if page == 'studio' %} class="active" aria-current="page"{% endif %}><span class="ico">🎨</span>Studio</a>
+  </nav>
+
+  <!-- Ordem importa: conquistas -> ponte (token, tema, sessão) -> núcleo -> script da página -->
+  <script src="/static/js/achievements.js?v={{ asset_v }}" defer></script>
+  <script src="/static/js/lab-bridge.js?v={{ asset_v }}" defer data-main-origin="{{ main_url }}"></script>
+  <script src="/static/js/lab-core.js?v={{ asset_v }}" defer></script>
+  {% block scripts %}{% endblock %}
+  {% if analytics %}
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  {% endif %}
+</body>
+</html>

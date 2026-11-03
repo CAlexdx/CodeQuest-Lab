@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Bug Hunt - CodeQuest LAB{% endblock %}
+{% block content %}
+  <div class="page-head">
+    <h1>🐛 Bug Hunt</h1>
+    <p>Corrija o código para passar em todos os testes. <strong>+20 XP</strong> por desafio resolvido (na primeira vez).</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="field" style="flex:2 1 220px">
+      <label for="challenge-select">Desafio <span id="solved-count" class="val" style="color:var(--accent)"></span></label>
+      <select id="challenge-select" class="select"></select>
+    </div>
+  </div>
+
+  <div class="bh-layout">
+    <aside class="card bh-side">
+      <span id="challenge-badge" class="chip">Nível Básico</span>
+      <h2 id="challenge-title" style="margin-top:8px">Carregando...</h2>
+      <p id="challenge-desc"></p>
+      <h3 style="margin-top:14px">Testes que o código precisa passar</h3>
+      <ul id="tests" class="tests"></ul>
+      <div class="hints">
+        <button type="button" id="btn-hint" class="btn btn-ghost btn-sm">💡 Pedir uma dica</button>
+        <div id="hint-list"></div>
+      </div>
+    </aside>
+
+    <section>
+      <div class="editor-wrap">
+        <div class="editor-bar"><span>Código com bug</span><span id="status" class="status">Carregando...</span></div>
+        <label for="code" class="sr-only">Editor do desafio</label>
+        <textarea id="code" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+        <div class="quickkeys" id="quickkeys" aria-label="Teclas rápidas"></div>
+      </div>
+
+      <div class="toolbar" style="margin-top:12px;margin-bottom:0">
+        <div class="actions">
+          <button type="button" id="btn-test" class="btn btn-success">▶ Testar código</button>
+          <button type="button" id="btn-submit" class="btn">✔ Submeter resposta</button>
+          <button type="button" id="btn-reset" class="btn btn-secondary">↺ Restaurar</button>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="editor-bar"><span>Resultado</span></div>
+        <pre id="out-text" class="muted">Clique em "Testar código" para rodar os testes.</pre>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="/static/js/engines.js?v={{ asset_v }}" defer></script>
+  <script src="/static/js/bughunt.js?v={{ asset_v }}" defer></script>
+{% endblock %}

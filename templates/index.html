@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}CodeQuest LAB{% endblock %}
+{% block content %}
+  <div class="page-head">
+    <h1>Bem-vindo ao LAB 🧪</h1>
+    <p id="hub-sub">Pratique o que você aprendeu nas trilhas: escreva código de verdade, direto no navegador.</p>
+  </div>
+
+  <div class="hub-grid">
+    <a class="hub-card" href="/sandbox">
+      <span class="big">💻</span>
+      <h2>Sandbox de Código</h2>
+      <p>Rode Python, JavaScript e consultas SQL sem instalar nada. Há exemplos prontos para começar.</p>
+      <span class="meta">Python · JavaScript · SQL</span>
+    </a>
+    <a class="hub-card" href="/bug-hunt">
+      <span class="big">🐛</span>
+      <h2>Bug Hunt</h2>
+      <p>Encontre o erro escondido no código, passe nos testes e ganhe XP e conquistas no CodeQuest.</p>
+      <span class="meta" id="hub-bughunt">{{ bughunt_total }} desafios</span>
+    </a>
+    <a class="hub-card" href="/studio-css">
+      <span class="big">🎨</span>
+      <h2>Studio CSS</h2>
+      <p>Monte botões, cards e alertas mexendo nos controles e copie o CSS pronto.</p>
+      <span class="meta">Visual ao vivo</span>
+    </a>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Como o XP funciona aqui?</h3>
+    <p style="font-size:13px">Entre pelo CodeQuest (botão <strong>CodeQuest LAB</strong> no painel) e o seu progresso do Bug Hunt é salvo no mesmo perfil, com XP e conquistas.
+    Sem login você pode praticar à vontade, só não salva.</p>
+  </div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/hub.js?v={{ asset_v }}" defer></script>{% endblock %}
